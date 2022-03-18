@@ -8,9 +8,12 @@ from tkinter import filedialog as fd
 class App(tk.Tk):
   def __init__(self, master=None):
     super().__init__(master)
+    #create basic window properties
     self.title("SoundOff")
     self.geometry("625x365")
     self.configure(bg="#333147")
+    
+    #initialize the filename (of the wave file) to be blank
     self.filename=""
 
     #button to ask for wav file
@@ -21,16 +24,19 @@ class App(tk.Tk):
       style="File.TButton"
         
     )
-
+    
+    #place select file button onto window
     self.open_audio_file.grid(column=1,row=2,sticky=(N,S),pady=20)
     
     
-    
+    #create greeting label
     self.welcome_label = ttk.Label(
        self,
        text="Welcome to SoundOff!",
        style="Greeting.TLabel"
     )
+    
+    #i was having trouble without blank labels, hope to eventually get rid of these
     self.blank_label = ttk.Label(
       self,
       text="",
@@ -43,12 +49,15 @@ class App(tk.Tk):
       width=16,
       style="Blank.TLabel"
     )
+    
+    #place all of our labels onto the screen
     self.welcome_label.grid(column=1,row=1,sticky=(N,W,E,S))
     self.blank_label.grid(column=0,row=1)
     self.blank_label.grid(column=0,row=2)
     self.blank_label.grid(column=0,row=0,pady=20)
     self.blank_label2.grid(column=1,row=3,pady=65)
     
+    #create buttons dealing with standards
     self.add_button = ttk.Button(
       self,
       text="Add a new standard",
@@ -68,7 +77,7 @@ class App(tk.Tk):
       style="Add.TButton"
     )
     
-
+    #place buttons dealing with standards
     self.add_button.grid(column=0,row=10,pady=20,padx=10)
     self.modify_button.grid(column=1,row=10,pady=20)
     self.view_button.grid(column=2,row=10,pady=20)
@@ -104,7 +113,8 @@ class App(tk.Tk):
       background="#333147",
       font=('Helvetica', 8)
     )
-    
+  
+  #return/change filename
   def change_file_name(self,filename):
     self.filename = filename
   def get_filename(self):
@@ -113,7 +123,7 @@ class App(tk.Tk):
   
   #command to ask for name of file
   def select_audio_file(self):
-  
+    #file types to accept
     filetypes=(
       ("WAV file","*.wav"),
       ("All files","*.*")
@@ -125,8 +135,9 @@ class App(tk.Tk):
     )
     
     self.change_file_name(filename)
-    style = ttk.Style()
     
+    #define style of the filename to be on screen
+    style = ttk.Style()
     style.configure(
       "filename.TLabel",
       foreground="white",
@@ -134,6 +145,7 @@ class App(tk.Tk):
       font=('Helvetica', 8)
     )
     
+    #create and place filename label
     self.filename_label = ttk.Label(
       self,
       text=self.get_filename(),
@@ -144,7 +156,7 @@ class App(tk.Tk):
     
 
   #Create a button to ask if the user wants to modify 
-  #the current standards
+  #the current standards (do nothing now)
   def add_or_modify(self):
     pass
   
