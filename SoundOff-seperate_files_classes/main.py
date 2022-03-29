@@ -11,7 +11,11 @@ import view_standards_window
 from view_standards_window import *
 import view_results_window
 import report_results_window
-
+import numpy as np
+import scipy
+import math
+import resampy
+import statistics
 
 class App(tk.Tk):
     """A SoundOff window.
@@ -366,14 +370,38 @@ class App(tk.Tk):
 
 
     def get_luf(self, file_path):
-        data, rate = sf.read(file_path)
+        data, rate = sf.read(file_path) #read wav file
 
-        meter = pyln.Meter(rate)
-        lufs = meter.integrated_loudness(data)
+        meter = pyln.Meter(rate) #create meter
+        lufs = meter.integrated_loudness(data) #get lufs value
         return lufs
 
     def get_peak(self, file_path):
-        return random.randint(-3, 1)
+        resampling_factor = 4 #use a resampling factor of 4
+        
+        data,rate = sf.read(file_path) #read wav file
+
+        #calculate number of samples in resampled file
+        samples = len(data) * resampling_factor 
+
+        #resample using FFT
+        newAudio = scipy.signal.resample(data, samples)
+        current_peak1 = np.max(np.abs(newAudio)) #find peak value
+        current_peak1 = math.log(current_peak1,10)*20 #convert to decibels
+
+        #resample using resampy
+        newAudio = resampy.resample(data,len(data), samples, axis=-1)
+        current_peak2 = np.max(np.abs(newAudio)) #find peak value
+        current_peak2 = math.log(current_peak2,10)*20 #convert to decibels
+
+        #resample using polynomial
+        newAudio = scipy.signal.resample_poly(data, resampling_factor,1)
+        current_peak3 = np.max(np.abs(newAudio)) #find peak value
+        current_peak3 = math.log(current_peak3,10)*20 #convert to decibels
+
+        #get and return median of the three techniques
+        peak = statistics.median([current_peak1,current_peak2,current_peak3])
+        return(peak)
 
 
 if __name__ == "__main__":
