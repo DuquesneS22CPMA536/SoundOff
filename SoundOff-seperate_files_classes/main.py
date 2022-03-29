@@ -1,21 +1,19 @@
-from tkinter.ttk import *
 from tkinter import filedialog as fd
-import random
-from tkinter.ttk import OptionMenu
 import sqlite3
 import soundfile as sf
 import pyloudnorm as pyln
-import add_new_window
-import modify_standards_window
-import view_standards_window
-from view_standards_window import *
-import view_results_window
+import add_new_platform_window
+import modify_platforms_window
+import view_platforms_window
+from view_platforms_window import *
 import report_results_window
+import no_standards_file_window
 import numpy as np
 import scipy
 import math
 import resampy
 import statistics
+
 
 class App(tk.Tk):
     """A SoundOff window.
@@ -24,19 +22,19 @@ class App(tk.Tk):
     a standard's peak value, and test the wav file's LUF value against a standard's LUF value.
 
     Attributes:
-        filename: The current wav file path to be tested. Can change frequently. String object.
-        standards: a dictionary of current standards, needs to change to database
-      """
+        file_path: The current audio file path to be tested. Can change frequently. String object.
+        platforms: a dictionary of current platforms with lufs and peak values
+        make_changes: a boolean value used by the warning window to hold whether the user wishes to make a change
+    """
 
     def __init__(self, master=None):
-        """Initializes the application idk add more
+        """Initializes the main window application
 
-        IDK more information about what the application
-        does?
+        Will hold buttons for the main functions and store platform information by accessing the standards.db file
 
         Args:
-          self: An App Object. App instance.
-          master: some info here
+          self: The main window
+          master: no master, this is the first instance of a window
 
         Raises:
           Any errors raised should be put here
@@ -45,49 +43,31 @@ class App(tk.Tk):
         super().__init__(master)
         # create basic window properties
         self.title("SoundOff")
-        self.geometry("1228x775")
-        self.configure(bg="#1e1529")
+        self.geometry("1155x775")
+        self.configure(bg="#2d2933")
         self.iconbitmap('SoundOff.ico')
 
-        # initialize the filename (path of the wave file) to be blank
-        self.filename = ""
+        # initialize path of the file being passed in
+        self.file_path = ""
 
-        # a dictionary to store standards, initialized to query from standards database
-        self.standards = {}
+        # a dictionary to store platform standards, initialized to query from standards database
+        self.platforms = {}
 
         # True/False value to store whether to make changes after warning message
         self.make_changes = False
 
-        # connect to standards database (assumes it's already made)
-        # make sure its in the same folder as py file
-        connection = sqlite3.connect('standards.db')
-
-        cursor = connection.cursor()
-        standard_info = cursor.execute('''SELECT * FROM Standards''')
-        for standard in standard_info:
-            # key for dictionary = standard name
-            # value for dictionary = (lufs,peak)
-            self.standards[standard[0]] = (standard[1], standard[2])
-
-        # button to ask for wav file
+        # define our labels and widgets to be placed on the screen
         self.open_audio_file = ttk.Button(
             self,
-            text="Select a .wav file",
+            text="Select a file",
             command=self.select_audio_file,
             style="File.TButton"
         )
-
-        # place select file button onto window
-        self.open_audio_file.grid(column=1, row=2, sticky="ns", pady=20, padx=323, ipadx=45, ipady=22)
-
-        # create greeting label
         self.welcome_label = ttk.Label(
             self,
             text="Welcome to SoundOff!",
             style="Greeting.TLabel"
         )
-
-        # I was having trouble without blank labels, hope to eventually get rid of these
         self.blank_label = ttk.Label(
             self,
             text="",
@@ -100,121 +80,149 @@ class App(tk.Tk):
             width=16,
             style="Blank.TLabel"
         )
-
-        # place all of our labels onto the screen
-        self.welcome_label.grid(column=1, row=0, pady=60)
-
-        self.blank_label2.grid(column=1, row=3, pady=200)
-
-        # create buttons dealing with standards
+        # create buttons dealing with platforms
         self.add_button = ttk.Button(
             self,
-            text="Add a new standard",
-            command=lambda: add_new_window.AddNew(self).wait_window(),
+            text="Add a new platform",
+            command=lambda: add_new_platform_window.AddNew(self),
             style="Add.TButton"
         )
         self.modify_button = ttk.Button(
             self,
-            text="Modify/Delete existing standards",
-            command=lambda: modify_standards_window.Modify(self).wait_window(),
+            text="Modify/Delete existing platform standards",
+            command=lambda: modify_platforms_window.Modify(self),
             style="Add.TButton"
         )
         self.view_button = ttk.Button(
             self,
-            text="View existing standards",
-            command=lambda: view_standards_window.ViewStandards(self).wait_window(),
+            text="View existing platform standards",
+            command=lambda: view_platforms_window.ViewPlatforms(self),
             style="Add.TButton"
         )
 
-        # place buttons dealing with standards
-        self.add_button.grid(column=0, row=10, pady=20, padx=10)
-        self.modify_button.grid(column=1, row=10, pady=20)
-        self.view_button.grid(column=2, row=10, pady=20)
-
-        # Create a style for how our widgets will look :)
-        # https://docs.python.org/3/library/tkinter.ttk.html
+        # define the look of our labels and widgets
         style = ttk.Style()
-
         style.configure(
             "Greeting.TLabel",
             foreground="white",
-            background="#1e1529",
+            background="#2d2933",
             font=('Helvetica', 35)
         )
         style.configure(
             "File.TButton",
-            foreground="#1e1529",
+            foreground="#2d2933",
             background="white",
             border=0,
             font=('Helvetica', 18)
         )
         style.configure(
             "Add.TButton",
-            foreground="#1e1529",
+            foreground="#2d2933",
             background="white",
             border=0,
             font=('Helvetica', 10)
         )
         style.configure(
             "Blank.TLabel",
-            foreground="#1e1529",
-            background="#1e1529",
+            foreground="#2d2933",
+            background="#2d2933",
             font=('Helvetica', 8)
         )
 
-    # return/change filename
-    def change_file_name(self, new_file_name):
-        """Changes the file name.
+        # place our widgets on the screen
+        self.open_audio_file.grid(column=0, row=2, columnspan=3, padx=450, ipadx=45, ipady=22, pady=20)
+        self.welcome_label.grid(column=0, row=0, pady=60, columnspan=3)
+        self.blank_label2.grid(column=1, row=3, pady=200)
+        self.add_button.grid(column=0, row=10, pady=20, padx=10)
+        self.modify_button.grid(column=1, row=10, pady=20)
+        self.view_button.grid(column=2, row=10, pady=20)
 
-        Makes change to the file name, which is an attribute of this instance of App class.
+        # connect to standards database
+        # make sure it's in the same folder as main file
+        try:
+            connection = sqlite3.connect('standards.db')
+            cursor = connection.cursor()
+
+            # define empty dictionary to store platform names and LUFS and peak max values
+            not_sorted_platforms = {}
+            platform_info = cursor.execute('''SELECT * FROM Standards''')
+            for platform_name in platform_info:
+                # key for dictionary = platform name
+                # value for dictionary = (lufs,peak)
+                not_sorted_platforms[platform_name[0]] = (platform_name[1], platform_name[2])
+            # sort by platform names
+            sorted_names = sorted(not_sorted_platforms)
+            self.platforms = {key: not_sorted_platforms[key] for key in sorted_names}
+            # close connection to database
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            no_standards_file_window.NoStandardsWindow(self)
+
+    def change_file_path(self, new_file_path):
+        """Changes the file path.
+
+        Makes change to the file path, which is an attribute of this instance of App class. This will change the
+        attribute used by the view report window.
 
         Args:
-          self: An App Object. App instance.
-          new_file_name: The new file name (or path) of the wav file to be tested. A string object
+          self: Instance of main window
+          new_file_path: The new file name (or path) of the wav file to be tested. A string object
 
         Raises:
           Any errors raised should be put here
 
         """
-        self.filename = new_file_name
+        self.file_path = new_file_path
 
-    def get_filename(self):
+    def get_file_path(self):
         """ Gives the current file name being stored by the app
 
         Returns the filename attribute being stored.
 
         Args:
-            self: An App Object. App instance.
+            self: Instance of main window
 
         Returns:
-            filename: the file path of the wav file selected by the user
+            file_path: the file path of the audio file selected by the user
 
         Raises:
             Any errors raised should be put here
 
         """
-        return self.filename
+        return self.file_path
 
-    # add in try catch block
-    def add_to_standard_dict(self, name, value):
-        """ Add a new standard
-
+    def add_to_platforms(self, name, value):
+        """ Add a new platform to both the platform dictionary and standards.db file
+        
         Will add the new standard along with luf values and peak values to the standard dictionary
         and the standards.db database
 
          Args:
-            self: An App Object. App instance.
-            name: The name of the standard. A string object.
+            self: Instance of main window
+            name: The name of the platform to add
             value: The LUFS and Peak value. A tuple in the form of (luf,peak).
 
         Raises:
             Any errors raised should be put here
         """
-        luf = value[0]
-        luf_int = int(luf)
-        peak = value[1]
-        peak_int = int(peak)
-        self.standards[name] = (luf_int, peak_int)
+        if value[0] != "":
+            lufs = value[0]
+            lufs_value = float(lufs)
+        else:
+            lufs_value = ""
+        if value[1] != "":
+            peak = value[1]
+            peak_value = float(peak)
+        else:
+            peak_value = ""
+
+        # before we add this new platform to the platform dictionary, sort it
+        not_sorted_platforms = self.platforms
+        not_sorted_platforms[name] = (lufs_value, peak_value)
+        sorted_names = sorted(not_sorted_platforms)
+        self.platforms = {key: not_sorted_platforms[key] for key in sorted_names}
 
         # now update database
         connection = sqlite3.connect('standards.db')
@@ -225,97 +233,126 @@ class App(tk.Tk):
                         VALUES
                         (?,?,?)"""
 
-        cursor.execute(insert_query, (name, luf_int, peak_int))
+        cursor.execute(insert_query, (name, lufs_value, peak_value))
         connection.commit()
         connection.close()
 
-    def get_standard_names_dict(self):
+    def get_platform_names(self):
         """ Gives the standard names stored within the standard dictionary.
 
         Returns the standard names currently being stored as list.
 
         Args:
-            self: An App Object. App instance.
+            self: Instance of main window
 
         Returns:
-            name_list: A list of all of the names currently being stored.
+            name_list: A list of all the names currently being stored.
 
         Raises:
             Any errors raised should be put here
         """
         name_list = []
-        for key in self.standards:
+        for key in self.platforms:
             name_list.append(key)
         return name_list
 
-    def get_standard_names_lower(self):
-        """ Gives the standard names stored within the standard dictionary.
+    def get_platform_names_lower(self):
+        """ Gives the standard names stored within the standard dictionary in lower case
 
-        Returns the standard names currently being stored as list.
+        Returns the standard names in lower case in a list. To be used to check whether a name is being stored,
+        not to display the names.
 
         Args:
-            self: An App Object. App instance.
+            self: Instance of main window
 
         Returns:
-            name_list: A list of all of the names currently being stored.
+            name_list: A list of all the names currently being stored.
 
         Raises:
             Any errors raised should be put here
         """
         name_list = []
-        for key in self.standards:
+        for key in self.platforms:
             name_list.append(key.lower())
         return name_list
 
-    def get_standard_value(self, name):
-        """ Gives the current file name being stored by the app
+    def get_platform_standard(self, name):
+        """ Gives the standard values for a platform passed
 
-        Returns the filename attribute being stored.
+        Returns the LUFS and Peak values for the platform
 
         Args:
-            self: An App Object. App instance.
-            name: the name of the standard we will return lufs and peak values for
+            self: Instance of main window
+            name: the name of the platform we will return lufs and peak values for
 
         Returns:
-            filename: the file path of the wav file selected by the user
+            A tuple in the form of (max integrated LUFS, max true peak dB)
 
         Raises:
             Any errors raised should be put here
 
         """
-        return self.standards.get(name)
+        return self.platforms.get(name)
 
-    def set_standard_value(self, name, value_type, new_value):
-        new_value_int = int(new_value)
+    def set_platform_standard(self, name, value_type, new_value):
+        """ Set (change) an existing platform standard
+
+        Will change the platforms dictionary and the standards.db database based on changes passed by user
+
+        Args:
+            self: Instance of main window
+            name: The name of the platform
+            value_type: Whether the user wishes to change the LUFS or peak value
+            new_value: The new value to change to. A string.
+
+        Raises:
+            Any errors raised should be put here
+        """
+        if new_value != "":
+            new_value_float = float(new_value)
+        else:
+            new_value_float = ""
         if value_type == "LUFS Value":
-            curr_value = list(self.get_standard_value(name))
-            curr_value[0] = new_value_int
-            self.standards[name] = tuple(curr_value)
+            curr_value = list(self.get_platform_standard(name))
+            curr_value[0] = new_value_float
+            self.platforms[name] = tuple(curr_value)
             # now update database
             connection = sqlite3.connect('standards.db')
             cursor = connection.cursor()
             update_query = """UPDATE Standards
                             SET LUF_Value = ?
                             WHERE Standard_Name = ?"""
-            cursor.execute(update_query, (new_value_int, name))
+            cursor.execute(update_query, (new_value_float, name))
             connection.commit()
             connection.close()
         else:
-            curr_value = list(self.get_standard_value(name))
-            curr_value[1] = new_value_int
-            self.standards[name] = tuple(curr_value)
+            curr_value = list(self.get_platform_standard(name))
+            curr_value[1] = new_value_float
+            self.platforms[name] = tuple(curr_value)
             # now update database
             connection = sqlite3.connect('standards.db')
             cursor = connection.cursor()
             update_query = """UPDATE Standards
                             SET Peak_Value = ?
                             WHERE Standard_Name = ?"""
-            cursor.execute(update_query, (new_value_int, name))
+            cursor.execute(update_query, (new_value_float, name))
             connection.commit()
             connection.close()
 
-    def remove_standard(self, name):
-        self.standards.pop(name)
+    def remove_platform(self, name):
+        """ Removes the platform name passed
+
+        Removes the platform from the platform dictionary as well as the standards.db database
+
+        Args:
+            self: Instance of main window
+            name: the name of the platform we will remove
+
+        Raises:
+            Any errors raised should be put here
+
+        """
+        self.platforms.pop(name)
         connection = sqlite3.connect('standards.db')
         cursor = connection.cursor()
         delete_query = """DELETE FROM Standards
@@ -324,20 +361,70 @@ class App(tk.Tk):
         connection.commit()
         connection.close()
 
+    def get_max_platform_name_length(self):
+        """Returns the length of the longest platform name
+
+        Uses the get_platform_names method to get a list of all platform names and then find the maximum length of
+        these. Will be used to configure window sizes that use platform names.
+
+        Args:
+            self: Instance of main window
+
+        Raises:
+            Any errors raised should be put here
+
+        """
+        name_list = self.get_platform_names()
+        max_length = 0
+        for name in name_list:
+            if len(name) > max_length:
+                max_length = len(name)
+        return max_length
+
     def store_changes(self, value):
+        """Stores whether a user should make changes after a warning window.
+
+        Will be used by the warning window if a user selects yes after a warning. Will also be used by the window
+        that prompted the warning after the changed has been made to reset the value.
+
+        Args:
+            self: Instance of main window
+            value: A boolean value
+
+        Raises:
+            Any errors raised should be put here
+
+        """
         if value:
             self.make_changes = True
+        else:
+            self.make_changes = False
 
     def get_change(self):
+        """Returns whether a user should make changes after a warning window.
+
+        Will also be used by the window that prompted a warning to see if the user wishes to do the action that
+        caused a warning.
+
+        Args:
+            self: Instance of main window
+
+        Returns:
+            A boolean value for whether a user should make a change or not.
+
+        Raises:
+            Any errors raised should be put here
+
+        """
         return self.make_changes
 
     def select_audio_file(self):
-        """Prompts user for wav file path.
+        """ Prompts user for an audio file path.
 
-        Uses askopenfilename to select a wav file to be tested.
+        Uses askopenfilename to select can audio file to be tested.
 
         Args:
-          self: An App Object. App instance.
+          self: Instance of main window
 
         Raises:
           Any errors raised should be put here
@@ -346,81 +433,104 @@ class App(tk.Tk):
         # file types to accept
         filetypes = (
             ("WAV file", "*.wav"),
+            ("FLAC file", "*.flac"),
             ("All files", "*.*")
         )
         filename = fd.askopenfilename(
-            title="Select a .wav file",
+            title="Select a file",
             initialdir='/',
             filetypes=filetypes
         )
 
-        self.change_file_name(filename)
+        self.change_file_path(filename)
 
-        # define style of the filename to be on screen
-        style = ttk.Style()
-        style.configure(
-            "filename.TLabel",
-            foreground="white",
-            background="#333147",
-            font=('Helvetica', 8)
-        )
-
-        if self.get_filename() != "":
-            report_results_window.Report(self, self.get_filename())
+        if self.get_file_path() != "":
+            report_results_window.Report(self, self.get_file_path())
 
     def open_wav_file(self):
-        '''Opens the wav file and fetches its needed information.
-        
+        """Opens the wav file and fetches its needed information.
+
         Opens the selected wav file and fetches its sample rate, data itself, length of data, and number of channels.
-        
+
         Args:
             self: An App Object.
-        
+
         Returns:
             A tuple containing the selected wav file's sample rate, data, length of data, and number of channels.
-        
+
         Raises:
             Add possible errors here.
-        
-        '''
-        data, rate = sf.read(self.get_filename())
+
+        """
+        data, rate = sf.read(self.get_file_path())
         length_file = len(data)
         if len(data.shape) > 1:
-            nchannels = data.shape[1]
+            n_channels = data.shape[1]
         else:
-            nchannels = 1
-        wav_info = (data, rate, length_file, nchannels)
+            n_channels = 1
+        wav_info = (data, rate, length_file, n_channels)
         return wav_info
 
     def get_luf(self, wav_info):
-        meter = pyln.Meter(wav_info[1]) #create meter; wav_info[1] is the rate
-        lufs = meter.integrated_loudness(wav_info[0]) #get lufs value; wav_info[0] is the data
+        """Returns the integrated loudness in LUFS of an audio file.
+
+        Uses pyloudnorm to find the LUFS of an audio file found at a file path passed.
+
+        Args:
+            self: Instance of main window
+            wav_info: a tuple of the selected wav file's sample rate, data, length of data, number of channels
+
+        Returns:
+            The integrated loudness of the audio file in LUFS
+
+        Raises:
+            Any errors raised should be put here
+
+        """
+
+        meter = pyln.Meter(wav_info[1])  # create meter; wav_info[1] is the rate
+        lufs = meter.integrated_loudness(wav_info[0])  # get lufs value; wav_info[0] is the data
         return lufs
 
     def get_peak(self, wav_info):
-        resampling_factor = 4 #use a resampling factor of 4
-        
-        #calculate number of samples in resampled file
-        samples = wav_info[2] * resampling_factor # wav_info[2] is the length of the data 
+        """Returns the true peak in dB of an audio file.
 
-        #resample using FFT
-        newAudio = scipy.signal.resample(wav_info[0], samples)
-        current_peak1 = np.max(np.abs(newAudio)) #find peak value
-        current_peak1 = math.log(current_peak1,10)*20 #convert to decibels
+        Uses some method to find the peak of an audio file found at a file path passed.
 
-        #resample using resampy
-        newAudio = resampy.resample(wav_info[0], wav_info[2], samples, axis=-1)
-        current_peak2 = np.max(np.abs(newAudio)) #find peak value
-        current_peak2 = math.log(current_peak2,10)*20 #convert to decibels
+        Args:
+            self: Instance of main window
+            wav_info: a tuple of the selected wav file's sample rate, data, length of data, number of channels
 
-        #resample using polynomial
-        newAudio = scipy.signal.resample_poly(wav_info[0], resampling_factor,1)
-        current_peak3 = np.max(np.abs(newAudio)) #find peak value
-        current_peak3 = math.log(current_peak3,10)*20 #convert to decibels
+        Returns:
+            The true peak of the audio file in dB
 
-        #get and return median of the three techniques
-        peak = statistics.median([current_peak1,current_peak2,current_peak3])
-        return(peak)
+        Raises:
+            Any errors raised should be put here
+
+        """
+        resampling_factor = 4  # use a resampling factor of 4
+
+        # calculate number of samples in resampled file
+        samples = wav_info[2] * resampling_factor  # wav_info[2] is the length of the data
+
+        # resample using FFT
+        new_audio = scipy.signal.resample(wav_info[0], samples)
+        current_peak1 = np.max(np.abs(new_audio))  # find peak value
+        current_peak1 = math.log(current_peak1, 10) * 20  # convert to decibels
+
+        # resample using resampy
+        new_audio = resampy.resample(wav_info[0], wav_info[2], samples, axis=-1)
+        current_peak2 = np.max(np.abs(new_audio))  # find peak value
+        current_peak2 = math.log(current_peak2, 10) * 20  # convert to decibels
+
+        # resample using polynomial
+        new_audio = scipy.signal.resample_poly(wav_info[0], resampling_factor, 1)
+        current_peak3 = np.max(np.abs(new_audio))  # find peak value
+        current_peak3 = math.log(current_peak3, 10) * 20  # convert to decibels
+
+        # get and return median of the three techniques
+        peak = statistics.median([current_peak1, current_peak2, current_peak3])
+        return peak
 
 
 if __name__ == "__main__":
