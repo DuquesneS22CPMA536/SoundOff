@@ -12,12 +12,13 @@ class Modify(tk.Toplevel):
 
     """
     def __init__(self, parent):
-        """Initializes the modify/delete standards window
+        """Initializes the modify/delete platform standards window
 
-        Will modify existing standards or delete existing standards
+        Will get user input for the standard to change/delete, the type of change to make (LUFS, Peak, Delete),
+        and the value to change LUFS or peak to.
 
         Args:
-          self: The new window
+          self: The instance of the modify/delete platform standards window
           parent: App object, window it came from
 
         Raises:
@@ -26,53 +27,44 @@ class Modify(tk.Toplevel):
         """
         super().__init__(parent)
         # create basic window properties
-        self.title("Modify Standards")
-        self.geometry("450x100")
+        self.title("Modify Platform Standards")
+        self.geometry("600x100")
+        self.configure(bg="#2d2933")
 
-        standard_names = parent.get_standard_names_dict()
+        # preselect first option from drop-down menu to be picked
+        platform_names = parent.get_platform_names()
         selected_name = StringVar()
-        selected_name.set(standard_names[0])
+        selected_name.set(platform_names[0])
         selected_lufs_peak = StringVar()
         selected_lufs_peak.set("LUFS Value")
 
-        drop_standards = OptionMenu(
+        # define our entry box input from user to be blank
+        blank_value = StringVar(self)
+        blank_value.set("")
+
+        # define all of our labels and widgets
+        drop_platforms = OptionMenu(
             self,
             selected_name,
-            *standard_names)
+            *platform_names)
 
         drop_lufs_peak = OptionMenu(
             self,
             selected_lufs_peak,
             "LUFS Value",
             "Peak Value",
-            "Delete Standard"
+            "Delete Platform"
         )
-        drop_standards.config(width=25)
-        drop_standards.config(height=1)
-        drop_standards.config(bg="#6f67c2")
-        drop_standards.config(fg="white")
-        drop_standards.config(font=("Helvetica", 10))
-        drop_lufs_peak.config(width=15)
-        drop_lufs_peak.config(height=1)
-        drop_lufs_peak.config(bg="#6f67c2")
-        drop_lufs_peak.config(fg="white")
-        drop_standards.grid(column=0, row=0)
-        drop_lufs_peak.grid(column=1, row=0)
-
-        blank_value = StringVar(self)
-        blank_value.set("")
         new_value_tf = Entry(
             self,
             textvariable=blank_value,
             width=13
         )
-
-        new_value_tf.grid(column=2, row=0)
-
         enter_button = ttk.Button(
             self,
             text="Enter",
-            command=lambda: self.modify_existing_standards(
+            style="Enter.TButton",
+            command=lambda: self.modify_existing_platforms(
                 selected_name.get(),
                 selected_lufs_peak.get(),
                 new_value_tf.get(),
@@ -80,37 +72,131 @@ class Modify(tk.Toplevel):
                 parent
             )
         )
-        enter_button.grid(column=0, row=1)
+        blank_label = ttk.Label(
+            self,
+            text="",
+            width=16,
+            style="Blank.TLabel"
+        )
 
-    def modify_existing_standards(
+        # define the look of our labels and widgets
+        drop_platforms.config(
+            width=38,
+            height=1,
+            bg="#6f67c2",
+            fg="white",
+            font=("Helvetica", 11),
+        )
+        drop_lufs_peak.config(
+            width=15,
+            height=1,
+            bg="#6f67c2",
+            fg="white",
+            font=("Helvetica", 11)
+        )
+        style = ttk.Style()
+        style.configure(
+            "Enter.TButton",
+            foreground="#1e1529",
+            background="white",
+            border=0,
+            font=('Helvetica', 11)
+        )
+        style.configure(
+            "Blank.TLabel",
+            foreground="#2d2933",
+            background="#2d2933",
+            font=('Helvetica', 8)
+        )
+
+        # place all of our labels and widgets on the screen
+        drop_platforms.grid(column=0, row=0)
+        drop_lufs_peak.grid(column=1, row=0)
+        new_value_tf.grid(column=2, row=0)
+        enter_button.grid(column=0, row=2)
+        blank_label.grid(column=0, row=1)
+
+        # make the window modal
+        self.focus_set()
+        self.grab_set()
+        self.transient(parent)
+        self.wait_window(self)
+
+    def modify_existing_platforms(
             self,
             name,
-            value_type,
+            change_type,
             value,
             window,
             parent
     ):
+        """Uses input from add new window to make changes to original window.
 
+        Will add a new platform with corresponding max integrated (LUFS) and max true peak (dB) by calling the
+        add_to_standard_dict method within the main window class. Calls the error window method when an error in
+        user input was made.
+
+        Args:
+            self: The instance of the modify/delete platform standards window
+            name: The name of the platform being changed
+            change_type: The type of change (LUFS, Peak, Delete) to make
+            value: The new LUFS or Peak value to change to
+            window: The modify/delete window
+            parent: App object, window it came from
+
+        Raises:
+            Any errors raised should be put here
+
+        """
+        # some errors may be found with user input, destroy is a boolean variable that marks whether an error was
+        # raised, if so the window may be destroyed
         destroy = True
-        if value_type == "Delete Standard":
+
+        # if a user decides to delete a standard, create a warning message by using the warning window to make sure
+        # the user wishes to make this change
+        if change_type == "Delete Platform":
             destroy = False
             warning_msg = "Do you want to delete "+name+"?"
-            warning = warning_window.CreateWarning(parent, warning_msg)
-            warning.wait_window()
-
+            warning_window.CreateWarning(parent, warning_msg)
+            # value potentially changed by the warning window if user picked "yes" to delete
             if parent.get_change():
-                parent.remove_standard(name)
+                parent.remove_platform(name)
                 self.destroy()
+                parent.store_changes(False)
 
         elif value != "":
             if value[0] == '-':
                 if not value[1:].isnumeric():
-                    error_window.AddError(self, "Enter a numeric value")
-                    destroy = False
+                    split_value = value[1:].split(".")
+                    if len(split_value) != 2:
+                        error_window.AddError(self, "Enter a numeric value")
+                        destroy = False
+                    elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
+                        if split_value[0] != "":
+                            error_window.AddError(self, "Enter a numeric value")
+                            destroy = False
+                # create a warning using warning_window if peak value is especially low
+                elif int(value) < -100:
+                    warning_msg = "Did you mean for the " + change_type + " to equal: " + value + "?"
+                    warning_window.CreateWarning(parent, warning_msg)
+                    # value potentially changed by the warning window if user picked "yes" to delete
+                    if not parent.get_change():
+                        destroy = False
+                        parent.store_changes(False)
+
             else:
                 error_window.AddError(self, "Must be negative")
                 destroy = False
 
+        # user is trying to enter a blank value
+        else:
+            curr_values = parent.get_platform_standard(name)
+            if change_type == "LUFS Value" and curr_values[1] == "":
+                error_window.AddError(self, "Platform must have at least one valid standard")
+                destroy = False
+            elif change_type == "Peak Value" and curr_values[0] == "":
+                error_window.AddError(self, "Platform must have at least one valid standard")
+                destroy = False
         if destroy:
-            parent.set_standard_value(name, value_type, value)
+            parent.set_platform_standard(name, change_type, value)
             window.destroy()
