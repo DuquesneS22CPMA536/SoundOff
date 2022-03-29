@@ -9,13 +9,12 @@ class AddError(tk.Toplevel):
 
     """
     def __init__(self, parent, error):
-        """Initializes the add new
+        """Initializes the error window
 
-        IDK more information about what the application
-        does?
+        Will print a clear error made by the user and prompt the user's acknowledgment of this error
 
         Args:
-          self: An add new variable object
+          self: The instance of the error window
           parent: App object, window it came from
           error: The error to print on window
 
@@ -26,28 +25,15 @@ class AddError(tk.Toplevel):
         super().__init__(parent)
         # create basic window properties
         self.title("ERROR")
-        self.geometry("300x80")
+        size = str(len(error)*6+100)+"x70"
+        self.geometry(size)
 
-        style = ttk.Style()
-
-        style.configure(
-            "ErrorMsg.TLabel",
-            foreground="red",
-            font=("Helvetica", 10)
-        )
-
-        style.configure(
-            "Okay.TButton",
-            background="white",
-            font=("Helvetica", 10, "bold")
-        )
-
+        # define label and button
         error_msg = ttk.Label(
             self,
             text="Error: " + error,
             style="ErrorMsg.TLabel"
         )
-
         okay = ttk.Button(
             self,
             text="Okay",
@@ -55,8 +41,33 @@ class AddError(tk.Toplevel):
             style="Okay.TButton"
         )
 
-        error_msg.pack()
-        okay.pack()
+        # define look of our widgets
+        style = ttk.Style()
+        style.configure(
+            "ErrorMsg.TLabel",
+            foreground="red",
+            font=("Helvetica", 10)
+        )
+        style.configure(
+            "Okay.TButton",
+            background="white",
+            font=("Helvetica", 10, "bold")
+        )
+
+        # place our widgets on the screen
+        error_msg.grid(column=0, row=0)
+        okay.grid(column=0, row=1)
 
     def exit_window(self):
+        """Exit the error window
+
+        Will exit the error window by using the destroy function
+
+        Args:
+            self: The instance of the error window
+
+        Raises:
+            Any errors raised should be put here
+
+        """
         self.destroy()
