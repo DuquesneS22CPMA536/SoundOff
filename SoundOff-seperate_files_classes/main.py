@@ -2,10 +2,10 @@ from tkinter import filedialog as fd
 import sqlite3
 import soundfile as sf
 import pyloudnorm as pyln
-import add_new_platform_window
-import modify_platforms_window
-import view_platforms_window
-from view_platforms_window import *
+import add_new_window
+import modify_standards_window
+import view_standards_window
+from view_standards_window import *
 import report_results_window
 import no_standards_file_window
 import numpy as np
