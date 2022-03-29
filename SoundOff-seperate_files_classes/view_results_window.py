@@ -13,12 +13,13 @@ class View(tk.Toplevel):
     def __init__(self, parent, name_selected, lufs_or_peak, peak, lufs, report_window):
         """Initializes the view report window
 
-        more info
+        Will print the report a user selected in the report results window. Will print the report in a scrollable
+        frame.
 
         Args:
-          self: An add new variable object
+          self: The instance of the view results window
           parent: App object, window it came from
-          name selected: the standards to test the new file against
+          name selected: the platform to test the new file against
           lufs_or_peak: whether to test against lufs, peak, or both
           peak: the peak value of the file to test
           lufs: the lufs value of the file to test
@@ -32,7 +33,9 @@ class View(tk.Toplevel):
         super().__init__(parent)
         # create basic window properties
         self.title("View Report")
-        self.geometry("630x300")
+        max_name_length = parent.get_max_platform_name_length()
+        size = str(max_name_length * 6 + 700) + "x300"
+        self.geometry(size)
 
         container = ttk.Frame(self)
         container.pack(fill=BOTH, expand=1)
@@ -48,314 +51,271 @@ class View(tk.Toplevel):
         )
 
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-
         canvas.configure(yscrollcommand=scrollbar.set)
 
+        # define a style of labels to display
         style = ttk.Style()
-
         style.configure(
             "Input.TLabel",
             foreground="white",
             background="#333147",
             font=('Helvetica', 10)
         )
-
         style.configure(
             "Column.TLabel",
-            font=("Helvetica", 9, "bold")
+            font=("Helvetica", 11, "bold")
         )
-
         style.configure(
             "Result.TLabel",
-            font=("Helvetica", 8)
+            font=("Helvetica", 10)
         )
-
         style.configure(
             "Pass.TLabel",
             foreground="green",
-            font=("Helvetica", 8, "bold")
+            font=("Helvetica", 10, "bold")
         )
-
         style.configure(
             "Fail.TLabel",
             foreground="red",
-            font=("Helvetica", 8, "bold")
+            font=("Helvetica", 10, "bold")
         )
 
-        ttk.Label(
+        # create header labels
+        platform_name_label = ttk.Label(
             scrollable_frame,
-            text="Standard Name",
-            style="Column.TLabel").grid(column=0, row=1, padx=5)
+            text="Platform Name",
+            style="Column.TLabel")
+        max_lufs_label = ttk.Label(
+            scrollable_frame,
+            text="Max Integrated Loudness (LUFS)",
+            style="Column.TLabel")
+        max_peak_label = ttk.Label(
+            scrollable_frame,
+            text="Max True Peak (dB)",
+            style="Column.TLabel")
+        lufs_result_label = ttk.Label(
+            scrollable_frame,
+            text="LUFS Result",
+            style="Column.TLabel")
+        peak_result_label = ttk.Label(
+            scrollable_frame,
+            text="Peak Result",
+            style="Column.TLabel")
+        input_lufs_label = ttk.Label(
+            scrollable_frame,
+            text="Input LUF from file: " + "{:.2f}".format(lufs),
+            style="Input.TLabel")
+        input_peak_label = ttk.Label(
+            scrollable_frame,
+            text="Input Peak from file: " + "{:.2f}".format(peak),
+            style="Input.TLabel")
 
-        standard_names = parent.get_standard_names_dict()
+        # always display platform name header
+        platform_name_label.grid(column=0, row=1, padx=5)
 
+        # only display headers for the type of report requested
         if lufs_or_peak == "LUFS Value":
-            ttk.Label(
-                scrollable_frame,
-                text="Max Integrated (LUFS)",
-                style="Column.TLabel").grid(column=1, row=1, padx=5)
-            ttk.Label(
-                scrollable_frame,
-                text="LUFS Result",
-                style="Column.TLabel").grid(column=2, row=1)
-            ttk.Label(
-                scrollable_frame,
-                text="Input LUF from file: " + str(lufs),
-                style="Input.TLabel").grid(column=0, row=0, columnspan=2)
-
+            max_lufs_label.grid(column=1, row=1, padx=5)
+            lufs_result_label.grid(column=2, row=1)
+            input_lufs_label.grid(column=0, row=0, columnspan=2)
         elif lufs_or_peak == "Peak Value":
-            ttk.Label(
-                scrollable_frame,
-                text="Max True Peak (dB)",
-                style="Column.TLabel").grid(column=1, row=1, padx=5)
-            ttk.Label(
-                scrollable_frame,
-                text="Peak Result",
-                style="Column.TLabel").grid(column=2, row=1)
-            ttk.Label(
-                scrollable_frame,
-                text="Input Peak from file: " + str(peak),
-                style="Input.TLabel").grid(column=0, row=0, columnspan=2)
-
+            max_peak_label.grid(column=1, row=1, padx=5)
+            peak_result_label.grid(column=2, row=1)
+            input_peak_label.grid(column=0, row=0, columnspan=2)
         else:
-            ttk.Label(
-                scrollable_frame,
-                text="Max Integrated (LUFS)",
-                style="Column.TLabel").grid(column=1, row=1, padx=5)
-            ttk.Label(
-                scrollable_frame,
-                text="Max True Peak (dB)",
-                style="Column.TLabel").grid(column=2, row=1, padx=5)
-            ttk.Label(
-                scrollable_frame,
-                text="LUFS Result",
-                style="Column.TLabel").grid(column=3, row=1, padx=5)
-            ttk.Label(
-                scrollable_frame,
-                text="Peak Result",
-                style="Column.TLabel").grid(column=4, row=1, padx=5)
-            ttk.Label(
-                scrollable_frame,
-                text="Input LUF from file: " + str(lufs),
-                style="Input.TLabel").grid(column=0, row=0, columnspan=2, padx=10)
-            ttk.Label(
-                scrollable_frame,
-                text="Input Peak from file: " + str(peak),
-                style="Input.TLabel").grid(column=2, row=0, columnspan=2)
-            # we need a report of everything
-        if name_selected == "All Available Standards":
-            if lufs_or_peak == "LUFS Value":
-                i = 2
-                for name in standard_names:
-                    name_label = ttk.Label(
-                        scrollable_frame,
-                        text=name,
-                        style="Result.TLabel"
-                    )
+            max_lufs_label.grid(column=1, row=1, padx=5)
+            max_peak_label.grid(column=2, row=1, padx=5)
+            lufs_result_label.grid(column=3, row=1, padx=5)
+            peak_result_label.grid(column=4, row=1, padx=5)
+            input_lufs_label.grid(column=0, row=0, columnspan=2, padx=10)
+            input_peak_label.grid(column=2, row=0, columnspan=2)
 
-                    values = parent.get_standard_value(name)
-                    lufs_label = ttk.Label(
-                        scrollable_frame,
-                        text=values[0],
-                        style="Result.TLabel"
-                    )
+        # get all platform names
+        platform_names = parent.get_platform_names()
 
-                    name_label.grid(column=0, row=i, padx=5)
+        # we need a report with every platform
+        if name_selected == "All Available Platforms":
+            i = 2
+            for name in platform_names:
+                name_label = ttk.Label(
+                    scrollable_frame,
+                    text=name,
+                    style="Result.TLabel"
+                )
+
+                values = parent.get_platform_standard(name)
+                # format the max lufs and peak to only display one decimal point
+                if values[0] != "":
+                    lufs_from_platform = "{:.1f}".format(values[0])
+                else:
+                    lufs_from_platform = ""
+                if values[1] != "":
+                    peak_from_platform = "{:.1f}".format(values[1])
+                else:
+                    peak_from_platform = ""
+
+                # create labels for the max luf and peak from the current platform
+                lufs_label = ttk.Label(
+                    scrollable_frame,
+                    text=lufs_from_platform,
+                    style="Result.TLabel"
+                )
+
+                peak_label = ttk.Label(
+                    scrollable_frame,
+                    text=peak_from_platform,
+                    style="Result.TLabel"
+                )
+
+                # test whether the input luf value is less than or equal to the max luf value
+                # if true: pass, if false: fail
+                if values[0] == "":
+                    result_lufs = ttk.Label(
+                        scrollable_frame,
+                        text=""
+                    )
+                elif lufs <= values[0]:
+                    result_lufs = ttk.Label(
+                        scrollable_frame,
+                        text="Pass",
+                        style="Pass.TLabel"
+                    )
+                else:
+                    result_lufs = ttk.Label(
+                        scrollable_frame,
+                        text="Fail",
+                        style="Fail.TLabel"
+                    )
+                # test whether the input peak value is less than or equal to the max peak value
+                # if true: pass, if false: fail
+                if values[1] == "":
+                    result_peak = ttk.Label(
+                        scrollable_frame,
+                        text=""
+                    )
+                elif peak <= values[1]:
+                    result_peak = ttk.Label(
+                        scrollable_frame,
+                        text="Pass",
+                        style="Pass.TLabel"
+                    )
+                else:
+                    result_peak = ttk.Label(
+                        scrollable_frame,
+                        text="Fail",
+                        style="Fail.TLabel"
+                    )
+                # always place name on the screen
+                name_label.grid(column=0, row=i, padx=5, sticky="w")
+
+                # only display report the user requested
+                if lufs_or_peak == "LUFS Value":
                     lufs_label.grid(column=1, row=i, padx=5)
-
-                    if lufs <= values[0]:
-                        result_lufs = ttk.Label(
-                            scrollable_frame,
-                            text="Pass",
-                            style="Pass.TLabel"
-                        )
-                    else:
-                        result_lufs = ttk.Label(
-                            scrollable_frame,
-                            text="Fail",
-                            style="Fail.TLabel"
-                        )
                     result_lufs.grid(column=2, row=i, padx=5)
-                    i += 1
-
-            elif lufs_or_peak == "Peak Value":
-                i = 2
-                for name in standard_names:
-                    name_label = ttk.Label(
-                        scrollable_frame,
-                        text=name,
-                        style="Result.TLabel"
-                    )
-
-                    values = parent.get_standard_value(name)
-                    peak_label = ttk.Label(
-                        scrollable_frame,
-                        text=values[1],
-                        style="Result.TLabel"
-                    )
-
-                    name_label.grid(column=0, row=i, padx=5)
+                elif lufs_or_peak == "Peak Value":
                     peak_label.grid(column=1, row=i, padx=5)
-
-                    if peak <= values[1]:
-                        result_peak = ttk.Label(
-                            scrollable_frame,
-                            text="Pass",
-                            style="Pass.TLabel"
-                        )
-                    else:
-                        result_peak = ttk.Label(
-                            scrollable_frame,
-                            text="Fail",
-                            style="Fail.TLabel"
-                        )
                     result_peak.grid(column=2, row=i, padx=5)
-                    i += 1
-            else:
-                i = 2
-                for name in standard_names:
-                    name_label = ttk.Label(
-                        scrollable_frame,
-                        text=name,
-                        style="Result.TLabel"
-                    )
-
-                    values = parent.get_standard_value(name)
-                    lufs_label = ttk.Label(
-                        scrollable_frame,
-                        text=values[0],
-                        style="Result.TLabel"
-                    )
-                    peak_label = ttk.Label(
-                        scrollable_frame,
-                        text=values[1],
-                        style="Result.TLabel"
-                    )
-
-                    name_label.grid(column=0, row=i, padx=5)
+                else:
                     lufs_label.grid(column=1, row=i, padx=5)
                     peak_label.grid(column=2, row=i, padx=5)
-
-                    if lufs <= values[0]:
-                        result_lufs = ttk.Label(
-                            scrollable_frame,
-                            text="Pass",
-                            style="Pass.TLabel"
-                        )
-                    else:
-                        result_lufs = ttk.Label(
-                            scrollable_frame,
-                            text="Fail",
-                            style="Fail.TLabel"
-                        )
                     result_lufs.grid(column=3, row=i, padx=5)
-                    if peak <= values[1]:
-                        result_peak = ttk.Label(
-                            scrollable_frame,
-                            text="Pass",
-                            style="Pass.TLabel"
-                        )
-                    else:
-                        result_peak = ttk.Label(
-                            scrollable_frame,
-                            text="Fail",
-                            style="Fail.TLabel"
-                        )
                     result_peak.grid(column=4, row=i, padx=5)
-                    i += 1
+                i += 1
 
-            # result of just 1 standard
+        # result of just one platform tested
         else:
             name_label = ttk.Label(
                 scrollable_frame,
                 text=name_selected,
                 style="Result.TLabel"
             )
-            name_label.grid(column=0, row=2, padx=5)
-            values = parent.get_standard_value(name_selected)
-            if lufs_or_peak == "LUFS Value":
-                lufs_value_label = ttk.Label(
-                    scrollable_frame,
-                    text=values[0],
-                    style="Result.TLabel"
-                )
-                lufs_value_label.grid(column=1, row=2, padx=5)
-                if lufs <= values[0]:
-                    result_lufs = ttk.Label(
-                        scrollable_frame,
-                        text="Pass",
-                        style="Pass.TLabel"
-                    )
-                else:
-                    result_lufs = ttk.Label(
-                        scrollable_frame,
-                        text="Fail",
-                        style="Fail.TLabel"
-                    )
 
+            values = parent.get_platform_standard(name_selected)
+            # format the max lufs and peak to only display one decimal point
+            if values[0] != "":
+                lufs_from_platform = "{:.1f}".format(values[0])
+            else:
+                lufs_from_platform = ""
+            if values[1] != "":
+                peak_from_platform = "{:.1f}".format(values[1])
+            else:
+                peak_from_platform = ""
+
+            # create labels for max luf and peak values for the platform selected
+            lufs_value_label = ttk.Label(
+                scrollable_frame,
+                text=lufs_from_platform,
+                style="Result.TLabel"
+            )
+            peak_value_label = ttk.Label(
+                scrollable_frame,
+                text=peak_from_platform,
+                style="Result.TLabel"
+            )
+
+            # test whether the input luf value is less than or equal to the max luf value
+            # if true: pass, if false: fail
+            if values[0] == "":
+                result_lufs = ttk.Label(
+                    scrollable_frame,
+                    text=""
+                )
+            elif lufs <= values[0]:
+                result_lufs = ttk.Label(
+                    scrollable_frame,
+                    text="Pass",
+                    style="Pass.TLabel"
+                )
+            else:
+                result_lufs = ttk.Label(
+                    scrollable_frame,
+                    text="Fail",
+                    style="Fail.TLabel"
+                )
+            # test whether the input peak value is less than or equal to the max peak value
+            # if true: pass, if false: fail
+            if values[1] == "":
+                result_peak = ttk.Label(
+                    scrollable_frame,
+                    text=""
+                )
+            elif peak <= values[1]:
+                result_peak = ttk.Label(
+                    scrollable_frame,
+                    text="Pass",
+                    style="Pass.TLabel"
+                )
+            else:
+                result_peak = ttk.Label(
+                    scrollable_frame,
+                    text="Fail",
+                    style="Fail.TLabel"
+                )
+
+            # always display the name of the platform selected
+            name_label.grid(column=0, row=2, padx=5)
+
+            # only display report the user requested
+            if lufs_or_peak == "LUFS Value":
+                lufs_value_label.grid(column=1, row=2, padx=5)
                 result_lufs.grid(column=2, row=2, padx=5)
 
             elif lufs_or_peak == "Peak Value":
-                peak_value_label = ttk.Label(
-                    scrollable_frame,
-                    text=values[1],
-                    style="Result.TLabel"
-                )
                 peak_value_label.grid(column=1, row=2, padx=5)
-                if peak <= values[1]:
-                    result_peak = ttk.Label(
-                        scrollable_frame,
-                        text="Pass",
-                        style="Pass.TLabel"
-                    )
-                else:
-                    result_peak = ttk.Label(
-                        scrollable_frame,
-                        text="Fail",
-                        style="Fail.TLabel"
-                    )
                 result_peak.grid(column=2, row=2, padx=5)
 
             else:
-                lufs_value_label = ttk.Label(
-                    scrollable_frame,
-                    text=values[0],
-                    style="Result.TLabel"
-                )
                 lufs_value_label.grid(column=1, row=2, padx=5)
-                peak_value_label = ttk.Label(
-                    scrollable_frame,
-                    text=values[1],
-                    style="Result.TLabel"
-                )
                 peak_value_label.grid(column=2, row=2, padx=5)
-                if lufs <= values[0]:
-                    result_lufs = ttk.Label(
-                        scrollable_frame,
-                        text="Pass",
-                        style="Pass.TLabel"
-                    )
-                else:
-                    result_lufs = ttk.Label(
-                        scrollable_frame,
-                        text="Fail",
-                        style="Fail.TLabel"
-                    )
-                if peak <= values[1]:
-                    result_peak = ttk.Label(
-                        scrollable_frame,
-                        text="Pass",
-                        style="Pass.TLabel"
-                    )
-                else:
-                    result_peak = ttk.Label(
-                        scrollable_frame,
-                        text="Fail",
-                        style="Fail.TLabel"
-                    )
                 result_lufs.grid(column=3, row=2, padx=5)
                 result_peak.grid(column=4, row=2, padx=5)
 
         container.pack()
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
+
+        # make the window modal
+        self.focus_set()
+        self.grab_set()
+        self.transient(parent)
+        self.wait_window(self)
