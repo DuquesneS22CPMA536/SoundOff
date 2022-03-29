@@ -369,7 +369,20 @@ class App(tk.Tk):
             report_results_window.Report(self, self.get_filename())
 
     def open_wav_file(self):
-        ''''''
+        '''Opens the wav file and fetches its needed information.
+        
+        Opens the selected wav file and fetches its sample rate, data itself, length of data, and number of channels.
+        
+        Args:
+            self: An App Object.
+        
+        Returns:
+            A tuple containing the selected wav file's sample rate, data, length of data, and number of channels.
+        
+        Raises:
+            Add possible errors here.
+        
+        '''
         data, rate = sf.read(self.get_filename())
         length_file = len(data)
         if len(data.shape) > 1:
