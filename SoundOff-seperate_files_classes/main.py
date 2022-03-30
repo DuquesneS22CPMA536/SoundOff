@@ -83,19 +83,19 @@ class App(tk.Tk):
         self.add_button = ttk.Button(
             self,
             text="Add a new platform",
-            command=lambda: add_new_platform_window.AddNew(self),
+            command=lambda: add_new_window.AddNew(self),
             style="Add.TButton"
         )
         self.modify_button = ttk.Button(
             self,
             text="Modify/Delete existing platform standards",
-            command=lambda: modify_platforms_window.Modify(self),
+            command=lambda: modify_standards_window.Modify(self),
             style="Add.TButton"
         )
         self.view_button = ttk.Button(
             self,
             text="View existing platform standards",
-            command=lambda: view_platforms_window.ViewPlatforms(self),
+            command=lambda: view_standards_window.ViewPlatforms(self),
             style="Add.TButton"
         )
 
