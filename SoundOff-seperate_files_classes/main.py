@@ -45,7 +45,6 @@ class App(tk.Tk):
         self.title("SoundOff")
         self.geometry("1155x775")
         self.configure(bg="#2d2933")
-        self.iconbitmap('SoundOff.ico')
 
         # initialize path of the file being passed in
         self.file_path = ""
