@@ -62,7 +62,7 @@ class ViewPlatforms(tk.Toplevel):
         )
         peak_level_label = ttk.Label(
             scrollable_frame,
-            text="Max True Peak (dB)",
+            text="Max True Peak (dBFS)",
             style="Heading.TLabel"
         )
 
