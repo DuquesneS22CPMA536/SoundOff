@@ -28,7 +28,7 @@ class Modify(tk.Toplevel):
         super().__init__(parent)
         # create basic window properties
         self.title("Modify Platform Standards")
-        self.geometry("600x100")
+        self.geometry("688x100")
         self.configure(bg="#2d2933")
 
         # preselect first option from drop-down menu to be picked
@@ -36,7 +36,7 @@ class Modify(tk.Toplevel):
         selected_name = StringVar()
         selected_name.set(platform_names[0])
         selected_lufs_peak = StringVar()
-        selected_lufs_peak.set("LUFS Value")
+        selected_lufs_peak.set("Integrated Loudness (LUFS)")
 
         # define our entry box input from user to be blank
         blank_value = StringVar(self)
@@ -51,8 +51,8 @@ class Modify(tk.Toplevel):
         drop_lufs_peak = OptionMenu(
             self,
             selected_lufs_peak,
-            "LUFS Value",
-            "Peak Value",
+            "Integrated Loudness (LUFS)",
+            "True Peak (dBFS)",
             "Delete Platform"
         )
         new_value_tf = Entry(
@@ -88,7 +88,7 @@ class Modify(tk.Toplevel):
             font=("Helvetica", 11),
         )
         drop_lufs_peak.config(
-            width=15,
+            width=25,
             height=1,
             bg="#6f67c2",
             fg="white",
@@ -112,7 +112,7 @@ class Modify(tk.Toplevel):
         # place all of our labels and widgets on the screen
         drop_platforms.grid(column=0, row=0)
         drop_lufs_peak.grid(column=1, row=0)
-        new_value_tf.grid(column=2, row=0)
+        new_value_tf.grid(column=2, row=0, padx=5)
         enter_button.grid(column=0, row=2)
         blank_label.grid(column=0, row=1)
 
@@ -191,10 +191,10 @@ class Modify(tk.Toplevel):
         # user is trying to enter a blank value
         else:
             curr_values = parent.get_platform_standard(name)
-            if change_type == "LUFS Value" and curr_values[1] == "":
+            if change_type == "Integrated Loudness (LUFS)" and curr_values[1] == "":
                 error_window.AddError(self, "Platform must have at least one valid standard")
                 destroy = False
-            elif change_type == "Peak Value" and curr_values[0] == "":
+            elif change_type == "True Peak (dBFS)" and curr_values[0] == "":
                 error_window.AddError(self, "Platform must have at least one valid standard")
                 destroy = False
         if destroy:
