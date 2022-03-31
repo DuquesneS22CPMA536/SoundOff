@@ -2,17 +2,17 @@ from tkinter import filedialog as fd
 import sqlite3
 import soundfile as sf
 import pyloudnorm as pyln
+import numpy as np
+import scipy
+import math
+import resampy
+import statistics
 import add_new_window
 import modify_standards_window
 import view_standards_window
 from view_standards_window import *
 import report_results_window
 import no_standards_file_window
-import numpy as np
-import scipy
-import math
-import resampy
-import statistics
 
 
 class App(tk.Tk):
@@ -25,7 +25,7 @@ class App(tk.Tk):
         file_path: The current audio file path to be tested. Can change frequently. String object.
         platforms: a dictionary of current platforms with lufs and peak values
         make_changes: a boolean value used by the warning window to hold whether the user wishes to make a change
-    """
+      """
 
     def __init__(self, master=None):
         """Initializes the main window application
@@ -43,7 +43,7 @@ class App(tk.Tk):
         super().__init__(master)
         # create basic window properties
         self.title("SoundOff")
-        self.geometry("1155x775")
+        self.geometry("1108x775")
         self.configure(bg="#2d2933")
         self.iconbitmap('SoundOff.ico')
 
@@ -130,12 +130,12 @@ class App(tk.Tk):
         )
 
         # place our widgets on the screen
-        self.open_audio_file.grid(column=0, row=2, columnspan=3, padx=450, ipadx=45, ipady=22, pady=20)
-        self.welcome_label.grid(column=0, row=0, pady=60, columnspan=3)
+        self.open_audio_file.grid(column=1, row=2, ipadx=30, ipady=18, pady=20, sticky="nsew")
+        self.welcome_label.grid(column=1, row=0, pady=60, sticky="nsew")
         self.blank_label2.grid(column=1, row=3, pady=200)
-        self.add_button.grid(column=0, row=10, pady=20, padx=10)
+        self.add_button.grid(column=0, row=10, pady=20, padx=80)
         self.modify_button.grid(column=1, row=10, pady=20)
-        self.view_button.grid(column=2, row=10, pady=20)
+        self.view_button.grid(column=2, row=10, pady=20, padx=70)
 
         # connect to standards database
         # make sure it's in the same folder as main file
@@ -195,7 +195,7 @@ class App(tk.Tk):
 
     def add_to_platforms(self, name, value):
         """ Add a new platform to both the platform dictionary and standards.db file
-        
+
         Will add the new standard along with luf values and peak values to the standard dictionary
         and the standards.db database
 
@@ -312,7 +312,7 @@ class App(tk.Tk):
             new_value_float = float(new_value)
         else:
             new_value_float = ""
-        if value_type == "LUFS Value":
+        if value_type == "Integrated Loudness (LUFS)":
             curr_value = list(self.get_platform_standard(name))
             curr_value[0] = new_value_float
             self.platforms[name] = tuple(curr_value)
@@ -531,7 +531,6 @@ class App(tk.Tk):
         # get and return median of the three techniques
         peak = statistics.median([current_peak1, current_peak2, current_peak3])
         return peak
-
 
 if __name__ == "__main__":
     app = App()
