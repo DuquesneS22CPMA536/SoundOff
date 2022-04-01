@@ -27,7 +27,7 @@ class AddNew(tk.Toplevel):
         super().__init__(parent)
         # create basic window properties
         self.title("Add a New Platform Standard")
-        self.geometry("820x95")
+        self.geometry("835x95")
         self.configure(bg="#2d2933")
 
         # define our labels and widgets to be placed on the screen
@@ -43,7 +43,7 @@ class AddNew(tk.Toplevel):
         )
         peak_label = ttk.Label(
             self,
-            text="Max True Peak (dB)",
+            text="Max True Peak (dBFS)",
             style="Header.TLabel"
         )
         blank_label = ttk.Label(
