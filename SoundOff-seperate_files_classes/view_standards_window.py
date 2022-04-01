@@ -28,7 +28,7 @@ class ViewPlatforms(tk.Toplevel):
         self.title("View Platforms")
         # change size according to the longest platform name
         max_name_length = parent.get_max_platform_name_length()
-        size = str(max_name_length*6+450) + "x400"
+        size = str(max_name_length*6+480) + "x400"
         self.geometry(size)
 
         # define a scrollable frame
