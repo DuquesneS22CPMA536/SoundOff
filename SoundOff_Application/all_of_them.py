@@ -1,33 +1,41 @@
 from tkinter import filedialog as fd
 import sqlite3
+import tkinter as tk
+from tkinter import ttk
+from tkinter import Listbox
+from tkinter import Label
+from tkinter import OptionMenu
+from tkinter import StringVar
+from tkinter import Entry
 import soundfile as sf
 import pyloudnorm as pyln
 import numpy as np
 import scipy
+from scipy import signal
 import math
 import resampy
 import statistics
-import tkinter as tk
-from tkinter import ttk
-from tkinter import *
 
 
 class App(tk.Tk):
     """A SoundOff window.
 
-    Will hold a primary window with functions to select a wav file, test the wav file's peak value against
-    a standard's peak value, and test the wav file's LUF value against a standard's LUF value.
+    Will hold a primary window with functions to select a wav file, test the wav file's peak value
+    against a standard's peak value, and test the wav file's LUF value against a standard's LUF
+    value.
 
     Attributes:
         file_path: The current audio file path to be tested. Can change frequently. String object.
         platforms: a dictionary of current platforms with lufs and peak values
-        make_changes: a boolean value used by the warning window to hold whether the user wishes to make a change
+        make_changes: a boolean value used by the warning window to hold whether the user wishes to
+        make a change
       """
 
     def __init__(self, master=None):
         """Initializes the main window application
 
-        Will hold buttons for the main functions and store platform information by accessing the standards.db file
+        Will hold buttons for the main functions and store platform information by accessing the
+        standards.db file
 
         Args:
           self: The main window
@@ -40,7 +48,7 @@ class App(tk.Tk):
         super().__init__(master)
         # create basic window properties
         self.title("SoundOff")
-        self.geometry("1155x775")
+        self.geometry("1048x775")
         self.configure(bg="#2d2933")
         self.iconbitmap('SoundOff.ico')
 
@@ -127,12 +135,12 @@ class App(tk.Tk):
         )
 
         # place our widgets on the screen
-        self.open_audio_file.grid(column=0, row=2, columnspan=3, padx=450, ipadx=45, ipady=22, pady=20)
-        self.welcome_label.grid(column=0, row=0, pady=60, columnspan=3)
+        self.open_audio_file.grid(column=1, row=2, ipadx=30, ipady=18, pady=20, sticky="nsew")
+        self.welcome_label.grid(column=1, row=0, pady=60, sticky="nsew")
         self.blank_label2.grid(column=1, row=3, pady=200)
-        self.add_button.grid(column=0, row=10, pady=20, padx=10)
+        self.add_button.grid(column=0, row=10, pady=20, padx=80)
         self.modify_button.grid(column=1, row=10, pady=20)
-        self.view_button.grid(column=2, row=10, pady=20)
+        self.view_button.grid(column=2, row=10, pady=20, padx=30)
 
         # connect to standards database
         # make sure it's in the same folder as main file
@@ -160,8 +168,8 @@ class App(tk.Tk):
     def change_file_path(self, new_file_path):
         """Changes the file path.
 
-        Makes change to the file path, which is an attribute of this instance of App class. This will change the
-        attribute used by the view report window.
+        Makes change to the file path, which is an attribute of this instance of App class.
+        This will change the attribute used by the view report window.
 
         Args:
           self: Instance of main window
@@ -234,6 +242,40 @@ class App(tk.Tk):
         connection.commit()
         connection.close()
 
+    def is_valid_input(self, input):
+        """ Gives the standard names stored within the standard dictionary.
+
+        Returns the standard names currently being stored as list.
+
+        Args:
+            self: Instance of main window
+            curr_input: the LUFS or peak input a user is trying to include as a platform standard
+
+        Returns:
+            is_valid: a boolean value for whether the input is valid or not
+            error_msg: the error message to report if the input is not valid
+
+        Raises:
+            Any errors raised should be put here
+        """
+        error_msg = ""
+        is_valid = True
+        if input[0] == '-':
+            if not input[1:].isnumeric():
+                split_value = input[1:].split(".")
+                if len(split_value) != 2:
+                    error_msg = "Enter a numeric value"
+                    is_valid = False
+                elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
+                    if split_value[0] != "":
+                        error_msg = "Enter a numeric value"
+                        is_valid = False
+        else:
+            error_msg = "Must enter a negative value"
+            is_valid = False
+        return is_valid, error_msg
+
+
     def get_platform_names(self):
         """ Gives the standard names stored within the standard dictionary.
 
@@ -256,8 +298,8 @@ class App(tk.Tk):
     def get_platform_names_lower(self):
         """ Gives the standard names stored within the standard dictionary in lower case
 
-        Returns the standard names in lower case in a list. To be used to check whether a name is being stored,
-        not to display the names.
+        Returns the standard names in lower case in a list. To be used to check whether a name is
+        being stored, not to display the names.
 
         Args:
             self: Instance of main window
@@ -294,7 +336,8 @@ class App(tk.Tk):
     def set_platform_standard(self, name, value_type, new_value):
         """ Set (change) an existing platform standard
 
-        Will change the platforms dictionary and the standards.db database based on changes passed by user
+        Will change the platforms dictionary and the standards.db database based on changes passed
+        by user
 
         Args:
             self: Instance of main window
@@ -309,7 +352,7 @@ class App(tk.Tk):
             new_value_float = float(new_value)
         else:
             new_value_float = ""
-        if value_type == "LUFS Value":
+        if value_type == "Integrated Loudness (LUFS)":
             curr_value = list(self.get_platform_standard(name))
             curr_value[0] = new_value_float
             self.platforms[name] = tuple(curr_value)
@@ -361,8 +404,8 @@ class App(tk.Tk):
     def get_max_platform_name_length(self):
         """Returns the length of the longest platform name
 
-        Uses the get_platform_names method to get a list of all platform names and then find the maximum length of
-        these. Will be used to configure window sizes that use platform names.
+        Uses the get_platform_names method to get a list of all platform names and then find the
+        maximum length of these. Will be used to configure window sizes that use platform names.
 
         Args:
             self: Instance of main window
@@ -381,8 +424,8 @@ class App(tk.Tk):
     def store_changes(self, value):
         """Stores whether a user should make changes after a warning window.
 
-        Will be used by the warning window if a user selects yes after a warning. Will also be used by the window
-        that prompted the warning after the changed has been made to reset the value.
+        Will be used by the warning window if a user selects yes after a warning. Will also be used
+        by the window that prompted the warning after the changed has been made to reset the value.
 
         Args:
             self: Instance of main window
@@ -400,8 +443,8 @@ class App(tk.Tk):
     def get_change(self):
         """Returns whether a user should make changes after a warning window.
 
-        Will also be used by the window that prompted a warning to see if the user wishes to do the action that
-        caused a warning.
+        Will also be used by the window that prompted a warning to see if the user wishes to do the
+        action that caused a warning.
 
         Args:
             self: Instance of main window
@@ -447,13 +490,15 @@ class App(tk.Tk):
     def open_wav_file(self):
         """Opens the wav file and fetches its needed information.
 
-        Opens the selected wav file and fetches its sample rate, data itself, length of data, and number of channels.
+        Opens the selected wav file and fetches its sample rate, data itself, length of data, and
+        number of channels.
 
         Args:
             self: An App Object.
 
         Returns:
-            A tuple containing the selected wav file's sample rate, data, length of data, and number of channels.
+            A tuple containing the selected wav file's sample rate, data, length of data, and number
+             of channels.
 
         Raises:
             Add possible errors here.
@@ -475,7 +520,8 @@ class App(tk.Tk):
 
         Args:
             self: Instance of main window
-            wav_info: a tuple of the selected wav file's sample rate, data, length of data, number of channels
+            wav_info: a tuple of the selected wav file's sample rate, data, length of data, number
+                of channels
 
         Returns:
             The integrated loudness of the audio file in LUFS
@@ -490,13 +536,14 @@ class App(tk.Tk):
         return lufs
 
     def get_peak(self, wav_info):
-        """Returns the true peak in dB of an audio file.
+        """Returns the true peak in dBFS of an audio file.
 
         Uses some method to find the peak of an audio file found at a file path passed.
 
         Args:
             self: Instance of main window
-            wav_info: a tuple of the selected wav file's sample rate, data, length of data, number of channels
+            wav_info: a tuple of the selected wav file's sample rate, data, length of data, number
+                of channels
 
         Returns:
             The true peak of the audio file in dB
@@ -529,11 +576,13 @@ class App(tk.Tk):
         peak = statistics.median([current_peak1, current_peak2, current_peak3])
         return peak
 
+
 class NoStandardsWindow(tk.Toplevel):
     """A window to display an error in the standards.db file
 
-    Will display the message that the standards.db file must be held in the same file as the program. Will also
-    automatically exit out of the main window, as it cannot function without the standards.db file.
+    Will display the message that the standards.db file must be held in the same file as the
+    program. Will also automatically exit out of the main window, as it cannot function without the
+    standards.db file.
 
     """
 
@@ -562,13 +611,13 @@ class NoStandardsWindow(tk.Toplevel):
         okay = ttk.Button(
             self,
             text="Okay",
-            command=lambda: parent.destroy(),
+            command=parent.destroy(),
             style="Okay.TButton"
         )
         create_button = ttk.Button(
             self,
             text="Create a new standards.db (empty) file",
-            command=lambda: self.create_blank(),
+            command=self.create_blank(),
             style="Okay.TButton"
         )
 
@@ -604,8 +653,8 @@ class NoStandardsWindow(tk.Toplevel):
     def create_blank(self):
         """Creates a blank table within the standards.db file
 
-        Will create a functioning table within the standards.db file so that if a user deletes the standards.db file,
-        the program will still function, just without any platform standards.
+        Will create a functioning table within the standards.db file so that if a user deletes the
+        standards.db file, the program will still function, just without any platform standards.
 
         Args:
             self: The no standards.db file found window
@@ -640,8 +689,8 @@ class Report(tk.Toplevel):
     def __init__(self, parent, file_path):
         """Initializes the view report window
 
-        Will provide user with the LUFS and true peak value of the audio file passed. Will also prompt the user to
-        select the platform and standard type to test the audio file against.
+        Will provide user with the LUFS and true peak value of the audio file passed. Will also
+        prompt the user to select the platform and standard type to test the audio file against.
 
         Args:
           self: The instance of the report result window
@@ -655,19 +704,20 @@ class Report(tk.Toplevel):
         super().__init__(parent)
         # create basic window properties
         self.title("Select Report")
-        self.geometry("490x200")
+        max_name_length = parent.get_max_platform_name_length()
+        size = str(max_name_length * 6 + 450) + "x500"
+        self.geometry(size)
 
         # get LUFS and peak from audio file
         wav_info = parent.open_wav_file()
         lufs = parent.get_luf(wav_info)
         peak = parent.get_peak(wav_info)
+        data, sample_rate, length_of_data, num_channels = parent.open_wav_file()
 
         # get platform names to be used in drop-down widget
         platform_names = parent.get_platform_names()
-        platform_names.insert(0, "All Available Platforms")
-        selected_name = StringVar()
-        # preselect first option so if a user does not click drop down list, it is assumed they wanted the first option
-        selected_name.set(platform_names[0])
+        # preselect first option so if a user does not click drop down list, it is assumed
+        # they wanted the first option
         selected_lufs_peak = StringVar()
         selected_lufs_peak.set("LUFS and Peak")
 
@@ -688,11 +738,21 @@ class Report(tk.Toplevel):
             text="Please select the type of report you wish you view",
             font=("Helvetica", 10, "bold")
         )
-        drop_platforms = OptionMenu(
+        scrollbar = ttk.Scrollbar(self)
+        scrollbar.grid(column=0, row=7, sticky="ns")
+        listbox_of_platforms = Listbox(
             self,
-            selected_name,
-            *platform_names,
+            bg="#6f67c2",
+            fg="white",
+            font="Helvetica",
+            selectbackground="#2d2933",
+            selectmode="multiple",
+            yscrollcommand=scrollbar.set,
+            width=10 + parent.get_max_platform_name_length()
         )
+        for name in platform_names:
+            listbox_of_platforms.insert("end", name)
+
         drop_lufs_peak = OptionMenu(
             self,
             selected_lufs_peak,
@@ -702,11 +762,19 @@ class Report(tk.Toplevel):
         )
         lufs_value_label = Label(
             self,
-            text="Your Integrated Loudness (LUFS) = " + "{:.2f}".format(lufs)
+            text="Your Integrated Loudness (LUFS) = " + "{:.1f}".format(lufs)
         )
         peak_value_label = Label(
             self,
-            text="Your True Peak (dB) =" + "{:.2f}".format(peak)
+            text="Your True Peak (dBFS) = " + "{:.1f}".format(peak)
+        )
+        sample_rate_label = Label(
+            self,
+            text="Your Sample Rate (Hz) = " + str(sample_rate)
+        )
+        num_channels_label = Label(
+            self,
+            text="Your number of channels = " + str(num_channels)
         )
         blank_label = Label(
             self,
@@ -714,11 +782,18 @@ class Report(tk.Toplevel):
         )
         enter_button = ttk.Button(
             self,
-            text="Enter",
+            text="Select",
+            style="Enter.TButton",
+            command=lambda: make_selection()
+
+        )
+        select_all_button = ttk.Button(
+            self,
+            text="Select All Platforms",
             style="Enter.TButton",
             command=lambda: View(
                 parent,
-                selected_name.get(),
+                platform_names,
                 selected_lufs_peak.get(),
                 peak,
                 lufs,
@@ -726,13 +801,21 @@ class Report(tk.Toplevel):
             )
         )
 
+        def make_selection():
+            selected_names = []
+            for curr_name in listbox_of_platforms.curselection():
+                selected_names.append(listbox_of_platforms.get(curr_name))
+
+            View(
+                parent,
+                selected_names,
+                selected_lufs_peak.get(),
+                peak,
+                lufs,
+                self
+            )
+
         # change look of labels and widgets
-        drop_platforms.config(
-            width=25,
-            bg="#6f67c2",
-            fg="white",
-            font=("Helvetica", 11)
-        )
         drop_lufs_peak.config(
             width=20,
             bg="#6f67c2",
@@ -748,13 +831,16 @@ class Report(tk.Toplevel):
             font=('Helvetica', 11)
         )
         selected_file_label.grid(column=0, row=0, columnspan=4, sticky="w")
-        directions_label.grid(column=0, row=4, columnspan=4, sticky="w")
-        drop_platforms.grid(column=0, row=5)
-        drop_lufs_peak.grid(column=1, row=5)
+        directions_label.grid(column=0, row=6, columnspan=4, sticky="w")
+        listbox_of_platforms.grid(column=0, row=7, sticky="w", padx=5)
+        drop_lufs_peak.grid(column=1, row=7, sticky="n")
         lufs_value_label.grid(column=0, row=1, sticky="w")
         peak_value_label.grid(column=0, row=2, sticky="w")
-        blank_label.grid(column=0, row=3, pady=10)
-        enter_button.grid(column=0, row=6, sticky="w")
+        sample_rate_label.grid(column=0, row=3, sticky="w")
+        num_channels_label.grid(column=0, row=4, sticky="w")
+        blank_label.grid(column=0, row=5, pady=10)
+        enter_button.grid(column=0, row=8, sticky="w", padx=5)
+        select_all_button.grid(column=0, row=9, sticky="w", padx=5)
 
         # make the window modal
         self.focus_set()
@@ -797,13 +883,13 @@ class CreateWarning(tk.Toplevel):
             text="Warning: " + warning,
             style="WarningMsg.TLabel"
         )
-        yes = ttk.Button(
+        yes_button = ttk.Button(
             self,
             text="Yes",
             command=lambda: self.exit_window("Yes", parent),
             style="Yes_No.TButton"
         )
-        no = ttk.Button(
+        no_button = ttk.Button(
             self,
             text="No",
             command=lambda: self.exit_window("No", parent),
@@ -825,8 +911,8 @@ class CreateWarning(tk.Toplevel):
 
         # place labels and widgets on screen
         warning_msg.grid(column=0, row=0, columnspan=2)
-        yes.grid(column=0, row=1)
-        no.grid(column=1, row=1)
+        yes_button.grid(column=0, row=1)
+        no_button.grid(column=1, row=1)
 
         # make the window modal
         self.focus_set()
@@ -837,7 +923,8 @@ class CreateWarning(tk.Toplevel):
     def exit_window(self, response, parent):
         """Will store changes based on user response from the warning window.
 
-        Will use store_changes() function to store whether a user wishes to keep changes made or not.
+        Will use store_changes() function to store whether a user wishes to keep changes made or
+        not.
 
         Args:
             self: The instance of the create warning window
@@ -865,8 +952,8 @@ class AddNew(tk.Toplevel):
     def __init__(self, parent):
         """Initializes the add new platform window
 
-        Will prompt the user for a platform name, a max integrated (LUFS) value and true peak (dB) value. Will call the
-        add_new_standard method to make changes.
+        Will prompt the user for a platform name, a max integrated (LUFS) value and true peak (dB)
+        value. Will call the add_new_standard method to make changes.
 
         Args:
           self: The instance of the add new standard window
@@ -879,7 +966,7 @@ class AddNew(tk.Toplevel):
         super().__init__(parent)
         # create basic window properties
         self.title("Add a New Platform Standard")
-        self.geometry("820x95")
+        self.geometry("835x95")
         self.configure(bg="#2d2933")
 
         # define our labels and widgets to be placed on the screen
@@ -895,7 +982,7 @@ class AddNew(tk.Toplevel):
         )
         peak_label = ttk.Label(
             self,
-            text="Max True Peak (dB)",
+            text="Max True Peak (dBFS)",
             style="Header.TLabel"
         )
         blank_label = ttk.Label(
@@ -978,9 +1065,9 @@ class AddNew(tk.Toplevel):
     def add_new_standard(self, platform_name, lufs_value, peak_value, window, parent):
         """Uses input from add new window to make changes to original window.
 
-        Will add a new platform with corresponding max integrated (LUFS) and max true peak (dB) by calling the
-        add_to_standard_dict method within the main window class. Calls the error window method when an error in
-        user input was made.
+        Will add a new platform with corresponding max integrated (LUFS) and max true peak (dB) by
+        calling the add_to_standard_dict method within the main window class. Calls the error window
+        method when an error in user input was made.
 
         Args:
             self: The instance of the add new standard window
@@ -994,8 +1081,8 @@ class AddNew(tk.Toplevel):
         Any errors raised should be put here
 
         """
-        # some errors may be found with user input, destroy is a boolean variable that marks whether an error was
-        # raised, if so the window may be destroyed
+        # some errors may be found with user input, destroy is a boolean variable that marks whether
+        # an error was raised, if so the window may be destroyed
         destroy = True
         if platform_name in parent.get_platform_names_lower():
             AddError(self, "Platform name already exists")
@@ -1006,58 +1093,23 @@ class AddNew(tk.Toplevel):
 
         if lufs_value != "":
             # make sure we have negative numbers
-            if lufs_value[0] == '-':
-                # we most likely have a valid input
-                if not lufs_value[1:].isnumeric():
-                    split_value = lufs_value[1:].split(".")
-                    if len(split_value) != 2:
-                        AddError(self, "Enter a numeric value")
-                        destroy = False
-                    elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
-                        if split_value[0] != "":
-                            AddError(self, "Enter a numeric value")
-                            destroy = False
-                # create a warning using warning_window if lufs value is especially low
-                elif int(lufs_value) < -100:
-                    warning_msg = "Did you mean for the LUFS value to equal: " + lufs_value + "?"
-                    CreateWarning(parent, warning_msg)
-                    # value potentially changed by the warning window if user picked "yes" to delete
-                    if not parent.get_change():
-                        destroy = False
-                        parent.store_changes(False)
-            else:
-                AddError(self, "You must enter a negative LUFS value")
+            is_valid, error_msg = parent.is_valid_input(lufs_value)
+            if not is_valid:
+                AddError(self, error_msg)
                 destroy = False
 
         if peak_value != "":
-            if peak_value[0] == '-':
-                # we most likely have a valid input
-                if not peak_value[1:].isnumeric():
-                    split_value = peak_value[1:].split(".")
-                    if len(split_value) != 2:
-                        AddError(self, "Enter a numeric value")
-                        destroy = False
-                    elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
-                        if split_value[0] != "":
-                            AddError(self, "Enter a numeric value")
-                            destroy = False
-
-                # create a warning using warning_window if peak value is especially low
-                elif int(peak_value) < -100:
-                    warning_msg = "Did you mean for the peak value to equal: " + peak_value + "?"
-                    CreateWarning(parent, warning_msg)
-                    # value potentially changed by the warning window if user picked "yes" to delete
-                    if not parent.get_change():
-                        destroy = False
-                        parent.store_changes(False)
-            else:
-                AddError(self, "You must enter a negative peak value")
+            is_valid, error_msg = parent.is_valid_input(peak_value)
+            if not is_valid:
+                AddError(self, error_msg)
                 destroy = False
+
         if lufs_value == "" and peak_value == "":
             AddError(self, "Please enter either a max integrated loudness or max true peak value.")
             destroy = False
 
-        # an error was not found with the latest input, changes can be made and the window can be destroyed
+        # an error was not found with the latest input, changes can be made and the window can be
+        # destroyed
         if destroy:
             parent.add_to_platforms(
                 platform_name,
@@ -1140,15 +1192,15 @@ class AddError(tk.Toplevel):
 class Modify(tk.Toplevel):
     """A window to modify or delete existing changes
 
-        Will take input from user to ask what changes should be made and then use the parent SoundOff window
-        to make changes
+        Will take input from user to ask what changes should be made and then use the parent
+        SoundOff window to make changes
 
     """
     def __init__(self, parent):
         """Initializes the modify/delete platform standards window
 
-        Will get user input for the standard to change/delete, the type of change to make (LUFS, Peak, Delete),
-        and the value to change LUFS or peak to.
+        Will get user input for the standard to change/delete, the type of change to make (LUFS,
+        Peak, Delete), and the value to change LUFS or peak to.
 
         Args:
           self: The instance of the modify/delete platform standards window
@@ -1201,7 +1253,6 @@ class Modify(tk.Toplevel):
                 selected_name.get(),
                 selected_lufs_peak.get(),
                 new_value_tf.get(),
-                self,
                 parent
             )
         )
@@ -1260,33 +1311,31 @@ class Modify(tk.Toplevel):
             name,
             change_type,
             value,
-            window,
             parent
     ):
         """Uses input from add new window to make changes to original window.
 
-        Will add a new platform with corresponding max integrated (LUFS) and max true peak (dB) by calling the
-        add_to_standard_dict method within the main window class. Calls the error window method when an error in
-        user input was made.
+        Will add a new platform with corresponding max integrated (LUFS) and max true peak (dB) by
+        calling the add_to_standard_dict method within the main window class. Calls the error window
+        method when an error in user input was made.
 
         Args:
             self: The instance of the modify/delete platform standards window
             name: The name of the platform being changed
             change_type: The type of change (LUFS, Peak, Delete) to make
             value: The new LUFS or Peak value to change to
-            window: The modify/delete window
             parent: App object, window it came from
 
         Raises:
             Any errors raised should be put here
 
         """
-        # some errors may be found with user input, destroy is a boolean variable that marks whether an error was
-        # raised, if so the window may be destroyed
+        # some errors may be found with user input, destroy is a boolean variable that marks whether
+        # an error was raised, if so the window may be destroyed
         destroy = True
 
-        # if a user decides to delete a standard, create a warning message by using the warning window to make sure
-        # the user wishes to make this change
+        # if a user decides to delete a standard, create a warning message by using the warning
+        # window to make sure the user wishes to make this change
         if change_type == "Delete Platform":
             destroy = False
             warning_msg = "Do you want to delete "+name+"?"
@@ -1298,27 +1347,9 @@ class Modify(tk.Toplevel):
                 parent.store_changes(False)
 
         elif value != "":
-            if value[0] == '-':
-                if not value[1:].isnumeric():
-                    split_value = value[1:].split(".")
-                    if len(split_value) != 2:
-                        AddError(self, "Enter a numeric value")
-                        destroy = False
-                    elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
-                        if split_value[0] != "":
-                            AddError(self, "Enter a numeric value")
-                            destroy = False
-                # create a warning using warning_window if peak value is especially low
-                elif int(value) < -100:
-                    warning_msg = "Did you mean for the " + change_type + " to equal: " + value + "?"
-                    CreateWarning(parent, warning_msg)
-                    # value potentially changed by the warning window if user picked "yes" to delete
-                    if not parent.get_change():
-                        destroy = False
-                        parent.store_changes(False)
-
-            else:
-                AddError(self, "Must be negative")
+            is_valid, error_msg = parent.is_valid_input(value)
+            if not is_valid:
+                AddError(self, error_msg)
                 destroy = False
 
         # user is trying to enter a blank value
@@ -1332,26 +1363,26 @@ class Modify(tk.Toplevel):
                 destroy = False
         if destroy:
             parent.set_platform_standard(name, change_type, value)
-            window.destroy()
+            self.destroy()
 
 
 class View(tk.Toplevel):
-    """A window to view the report of the lufs and peak values against the standards selected within the
-        report results window
+    """A window to view the report of the lufs and peak values against the standards selected within
+     the report results window
 
-        Will use a scrollable frame to print results.
+    Will use a scrollable frame to print results.
 
     """
-    def __init__(self, parent, name_selected, lufs_or_peak, peak, lufs, report_window):
+    def __init__(self, parent, names_selected, lufs_or_peak, peak, lufs, report_window):
         """Initializes the view report window
 
-        Will print the report a user selected in the report results window. Will print the report in a scrollable
-        frame.
+        Will print the report a user selected in the report results window. Will print the report in
+        a scrollable frame.
 
         Args:
           self: The instance of the view results window
           parent: App object, window it came from
-          name selected: the platform to test the new file against
+          names_selected: a list of all names to report for
           lufs_or_peak: whether to test against lufs, peak, or both
           peak: the peak value of the file to test
           lufs: the lufs value of the file to test
@@ -1366,11 +1397,11 @@ class View(tk.Toplevel):
         # create basic window properties
         self.title("View Report")
         max_name_length = parent.get_max_platform_name_length()
-        size = str(max_name_length * 6 + 700) + "x300"
+        size = str(max_name_length * 6 + 750) + "x300"
         self.geometry(size)
 
         container = ttk.Frame(self)
-        container.pack(fill=BOTH, expand=1)
+        container.pack(fill="both", expand=1)
         canvas = tk.Canvas(container)
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
@@ -1411,6 +1442,11 @@ class View(tk.Toplevel):
             foreground="red",
             font=("Helvetica", 10, "bold")
         )
+        style.configure(
+            "Close.TLabel",
+            foreground="orange",
+            font=("Helvetica", 10, "bold")
+        )
 
         # create header labels
         platform_name_label = ttk.Label(
@@ -1423,7 +1459,7 @@ class View(tk.Toplevel):
             style="Column.TLabel")
         max_peak_label = ttk.Label(
             scrollable_frame,
-            text="Max True Peak (dB)",
+            text="Max True Peak (dBFS)",
             style="Column.TLabel")
         lufs_result_label = ttk.Label(
             scrollable_frame,
@@ -1435,11 +1471,11 @@ class View(tk.Toplevel):
             style="Column.TLabel")
         input_lufs_label = ttk.Label(
             scrollable_frame,
-            text="Input LUF from file: " + "{:.2f}".format(lufs),
+            text="Input Integrated Loudness (LUFS) from file: " + "{:.1f}".format(lufs),
             style="Input.TLabel")
         input_peak_label = ttk.Label(
             scrollable_frame,
-            text="Input Peak from file: " + "{:.2f}".format(peak),
+            text="Input True Peak (dBFS) from file: " + "{:.1f}".format(peak),
             style="Input.TLabel")
 
         # always display platform name header
@@ -1462,107 +1498,15 @@ class View(tk.Toplevel):
             input_lufs_label.grid(column=0, row=0, columnspan=2, padx=10)
             input_peak_label.grid(column=2, row=0, columnspan=2)
 
-        # get all platform names
-        platform_names = parent.get_platform_names()
-
-        # we need a report with every platform
-        if name_selected == "All Available Platforms":
-            i = 2
-            for name in platform_names:
-                name_label = ttk.Label(
-                    scrollable_frame,
-                    text=name,
-                    style="Result.TLabel"
-                )
-
-                values = parent.get_platform_standard(name)
-                # format the max lufs and peak to only display one decimal point
-                if values[0] != "":
-                    lufs_from_platform = "{:.1f}".format(values[0])
-                else:
-                    lufs_from_platform = ""
-                if values[1] != "":
-                    peak_from_platform = "{:.1f}".format(values[1])
-                else:
-                    peak_from_platform = ""
-
-                # create labels for the max luf and peak from the current platform
-                lufs_label = ttk.Label(
-                    scrollable_frame,
-                    text=lufs_from_platform,
-                    style="Result.TLabel"
-                )
-
-                peak_label = ttk.Label(
-                    scrollable_frame,
-                    text=peak_from_platform,
-                    style="Result.TLabel"
-                )
-
-                # test whether the input luf value is less than or equal to the max luf value
-                # if true: pass, if false: fail
-                if values[0] == "":
-                    result_lufs = ttk.Label(
-                        scrollable_frame,
-                        text=""
-                    )
-                elif lufs <= values[0]:
-                    result_lufs = ttk.Label(
-                        scrollable_frame,
-                        text="Pass",
-                        style="Pass.TLabel"
-                    )
-                else:
-                    result_lufs = ttk.Label(
-                        scrollable_frame,
-                        text="Fail",
-                        style="Fail.TLabel"
-                    )
-                # test whether the input peak value is less than or equal to the max peak value
-                # if true: pass, if false: fail
-                if values[1] == "":
-                    result_peak = ttk.Label(
-                        scrollable_frame,
-                        text=""
-                    )
-                elif peak <= values[1]:
-                    result_peak = ttk.Label(
-                        scrollable_frame,
-                        text="Pass",
-                        style="Pass.TLabel"
-                    )
-                else:
-                    result_peak = ttk.Label(
-                        scrollable_frame,
-                        text="Fail",
-                        style="Fail.TLabel"
-                    )
-                # always place name on the screen
-                name_label.grid(column=0, row=i, padx=5, sticky="w")
-
-                # only display report the user requested
-                if lufs_or_peak == "LUFS Value":
-                    lufs_label.grid(column=1, row=i, padx=5)
-                    result_lufs.grid(column=2, row=i, padx=5)
-                elif lufs_or_peak == "Peak Value":
-                    peak_label.grid(column=1, row=i, padx=5)
-                    result_peak.grid(column=2, row=i, padx=5)
-                else:
-                    lufs_label.grid(column=1, row=i, padx=5)
-                    peak_label.grid(column=2, row=i, padx=5)
-                    result_lufs.grid(column=3, row=i, padx=5)
-                    result_peak.grid(column=4, row=i, padx=5)
-                i += 1
-
-        # result of just one platform tested
-        else:
+        i = 2
+        for name in names_selected:
             name_label = ttk.Label(
                 scrollable_frame,
-                text=name_selected,
+                text=name,
                 style="Result.TLabel"
             )
 
-            values = parent.get_platform_standard(name_selected)
+            values = parent.get_platform_standard(name)
             # format the max lufs and peak to only display one decimal point
             if values[0] != "":
                 lufs_from_platform = "{:.1f}".format(values[0])
@@ -1573,13 +1517,14 @@ class View(tk.Toplevel):
             else:
                 peak_from_platform = ""
 
-            # create labels for max luf and peak values for the platform selected
-            lufs_value_label = ttk.Label(
+            # create labels for the max luf and peak from the current platform
+            lufs_label = ttk.Label(
                 scrollable_frame,
                 text=lufs_from_platform,
                 style="Result.TLabel"
             )
-            peak_value_label = ttk.Label(
+
+            peak_label = ttk.Label(
                 scrollable_frame,
                 text=peak_from_platform,
                 style="Result.TLabel"
@@ -1592,16 +1537,22 @@ class View(tk.Toplevel):
                     scrollable_frame,
                     text=""
                 )
-            elif lufs <= values[0]:
+            elif values[0] - lufs > 2:
                 result_lufs = ttk.Label(
                     scrollable_frame,
-                    text="Pass",
+                    text="{:.1f}".format(-(lufs-values[0])),
                     style="Pass.TLabel"
+                )
+            elif values[0] - lufs > - 2:
+                result_lufs = ttk.Label(
+                    scrollable_frame,
+                    text="{:.1f}".format(-(lufs-values[0])),
+                    style="Close.TLabel"
                 )
             else:
                 result_lufs = ttk.Label(
                     scrollable_frame,
-                    text="Fail",
+                    text="{:.1f}".format(-(lufs-values[0])),
                     style="Fail.TLabel"
                 )
             # test whether the input peak value is less than or equal to the max peak value
@@ -1611,36 +1562,40 @@ class View(tk.Toplevel):
                     scrollable_frame,
                     text=""
                 )
-            elif peak <= values[1]:
+            elif values[1] - peak > .5:
                 result_peak = ttk.Label(
                     scrollable_frame,
-                    text="Pass",
+                    text="{:.1f}".format(-(peak-values[1])),
                     style="Pass.TLabel"
+                )
+            elif values[1] - peak > -.5:
+                result_peak = ttk.Label(
+                    scrollable_frame,
+                    text="{:.1f}".format(-(peak-values[1])),
+                    style="Close.TLabel"
                 )
             else:
                 result_peak = ttk.Label(
                     scrollable_frame,
-                    text="Fail",
+                    text="{:.1f}".format(-(peak-values[1])),
                     style="Fail.TLabel"
                 )
-
-            # always display the name of the platform selected
-            name_label.grid(column=0, row=2, padx=5)
+            # always place name on the screen
+            name_label.grid(column=0, row=i, padx=5, sticky="w")
 
             # only display report the user requested
             if lufs_or_peak == "LUFS Value":
-                lufs_value_label.grid(column=1, row=2, padx=5)
-                result_lufs.grid(column=2, row=2, padx=5)
-
+                lufs_label.grid(column=1, row=i, padx=5)
+                result_lufs.grid(column=2, row=i, padx=5)
             elif lufs_or_peak == "Peak Value":
-                peak_value_label.grid(column=1, row=2, padx=5)
-                result_peak.grid(column=2, row=2, padx=5)
-
+                peak_label.grid(column=1, row=i, padx=5)
+                result_peak.grid(column=2, row=i, padx=5)
             else:
-                lufs_value_label.grid(column=1, row=2, padx=5)
-                peak_value_label.grid(column=2, row=2, padx=5)
-                result_lufs.grid(column=3, row=2, padx=5)
-                result_peak.grid(column=4, row=2, padx=5)
+                lufs_label.grid(column=1, row=i, padx=5)
+                peak_label.grid(column=2, row=i, padx=5)
+                result_lufs.grid(column=3, row=i, padx=5)
+                result_peak.grid(column=4, row=i, padx=5)
+            i += 1
 
         container.pack()
         canvas.pack(side="left", fill="both", expand=True)
@@ -1662,8 +1617,8 @@ class ViewPlatforms(tk.Toplevel):
     def __init__(self, parent):
         """Initializes the View Platforms window
 
-        Will display current directory of platforms by using the get_platform_names method and the standards of these
-        platforms by using the get_platform_standard method.
+        Will display current directory of platforms by using the get_platform_names method and the
+        standards of these platforms by using the get_platform_standard method.
 
         Args:
           self: The instance of the view platforms window
@@ -1678,12 +1633,12 @@ class ViewPlatforms(tk.Toplevel):
         self.title("View Platforms")
         # change size according to the longest platform name
         max_name_length = parent.get_max_platform_name_length()
-        size = str(max_name_length*6+450) + "x400"
+        size = str(max_name_length*6+480) + "x400"
         self.geometry(size)
 
         # define a scrollable frame
         container = ttk.Frame(self)
-        container.pack(fill=BOTH, expand=1)
+        container.pack(fill="both", expand=1)
         canvas = tk.Canvas(container)
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
@@ -1712,7 +1667,7 @@ class ViewPlatforms(tk.Toplevel):
         )
         peak_level_label = ttk.Label(
             scrollable_frame,
-            text="Max True Peak (dB)",
+            text="Max True Peak (dBFS)",
             style="Heading.TLabel"
         )
 
