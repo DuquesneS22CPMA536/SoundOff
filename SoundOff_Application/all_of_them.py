@@ -3,7 +3,6 @@ import sqlite3
 import tkinter as tk
 from tkinter import ttk
 from tkinter import Listbox
-from tkinter import Label
 from tkinter import OptionMenu
 from tkinter import StringVar
 from tkinter import Entry
@@ -48,7 +47,10 @@ class App(tk.Tk):
         super().__init__(master)
         # create basic window properties
         self.title("SoundOff")
-        self.geometry("1048x775")
+        width = self.winfo_screenwidth()
+        height = self.winfo_screenheight()
+        size = str(width-10) + "x" + str(height-100)
+        self.geometry(size)
         self.configure(bg="#2d2933")
         self.iconbitmap('SoundOff.ico')
 
@@ -137,10 +139,10 @@ class App(tk.Tk):
         # place our widgets on the screen
         self.open_audio_file.grid(column=1, row=2, ipadx=30, ipady=18, pady=20, sticky="nsew")
         self.welcome_label.grid(column=1, row=0, pady=60, sticky="nsew")
-        self.blank_label2.grid(column=1, row=3, pady=200)
-        self.add_button.grid(column=0, row=10, pady=20, padx=80)
+        self.blank_label2.grid(column=1, row=3, pady=height/3.8)
+        self.add_button.grid(column=0, row=10, pady=20, padx=width/8)
         self.modify_button.grid(column=1, row=10, pady=20)
-        self.view_button.grid(column=2, row=10, pady=20, padx=30)
+        self.view_button.grid(column=2, row=10, pady=20, padx=width/9)
 
         # connect to standards database
         # make sure it's in the same folder as main file
@@ -228,19 +230,22 @@ class App(tk.Tk):
         not_sorted_platforms[name] = (lufs_value, peak_value)
         sorted_names = sorted(not_sorted_platforms)
         self.platforms = {key: not_sorted_platforms[key] for key in sorted_names}
+        try:
+            # now update database
+            connection = sqlite3.connect('standards.db')
+            cursor = connection.cursor()
 
-        # now update database
-        connection = sqlite3.connect('standards.db')
-        cursor = connection.cursor()
+            insert_query = """INSERT INTO Standards
+                            (Standard_Name, LUF_Value, Peak_Value)
+                            VALUES
+                            (?,?,?)"""
 
-        insert_query = """INSERT INTO Standards
-                        (Standard_Name, LUF_Value, Peak_Value)
-                        VALUES
-                        (?,?,?)"""
-
-        cursor.execute(insert_query, (name, lufs_value, peak_value))
-        connection.commit()
-        connection.close()
+            cursor.execute(insert_query, (name, lufs_value, peak_value))
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            NoStandardsWindow(self)
 
     def is_valid_input(self, input):
         """ Gives the standard names stored within the standard dictionary.
@@ -312,7 +317,7 @@ class App(tk.Tk):
         """
         name_list = []
         for key in self.platforms:
-            name_list.append(key.lower())
+            name_list.append(key.lower().split())
         return name_list
 
     def get_platform_standard(self, name):
@@ -357,27 +362,35 @@ class App(tk.Tk):
             curr_value[0] = new_value_float
             self.platforms[name] = tuple(curr_value)
             # now update database
-            connection = sqlite3.connect('standards.db')
-            cursor = connection.cursor()
-            update_query = """UPDATE Standards
-                            SET LUF_Value = ?
-                            WHERE Standard_Name = ?"""
-            cursor.execute(update_query, (new_value_float, name))
-            connection.commit()
-            connection.close()
+            try:
+                connection = sqlite3.connect('standards.db')
+                cursor = connection.cursor()
+                update_query = """UPDATE Standards
+                                SET LUF_Value = ?
+                                WHERE Standard_Name = ?"""
+                cursor.execute(update_query, (new_value_float, name))
+                connection.commit()
+                connection.close()
+            except sqlite3.OperationalError:
+                # create an error window which will destroy the main window
+                NoStandardsWindow(self)
         else:
             curr_value = list(self.get_platform_standard(name))
             curr_value[1] = new_value_float
             self.platforms[name] = tuple(curr_value)
             # now update database
-            connection = sqlite3.connect('standards.db')
-            cursor = connection.cursor()
-            update_query = """UPDATE Standards
-                            SET Peak_Value = ?
-                            WHERE Standard_Name = ?"""
-            cursor.execute(update_query, (new_value_float, name))
-            connection.commit()
-            connection.close()
+            try:
+                connection = sqlite3.connect('standards.db')
+                cursor = connection.cursor()
+                update_query = """UPDATE Standards
+                                SET Peak_Value = ?
+                                WHERE Standard_Name = ?"""
+                cursor.execute(update_query, (new_value_float, name))
+                connection.commit()
+                connection.close()
+            except sqlite3.OperationalError:
+                # create an error window which will destroy the main window
+                NoStandardsWindow(self)
 
     def remove_platform(self, name):
         """ Removes the platform name passed
@@ -393,13 +406,17 @@ class App(tk.Tk):
 
         """
         self.platforms.pop(name)
-        connection = sqlite3.connect('standards.db')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM Standards
-                            WHERE Standard_Name = ?"""
-        cursor.execute(delete_query, (name,))
-        connection.commit()
-        connection.close()
+        try:
+            connection = sqlite3.connect('standards.db')
+            cursor = connection.cursor()
+            delete_query = """DELETE FROM Standards
+                                WHERE Standard_Name = ?"""
+            cursor.execute(delete_query, (name,))
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            NoStandardsWindow(self)
 
     def get_max_platform_name_length(self):
         """Returns the length of the longest platform name
@@ -473,8 +490,7 @@ class App(tk.Tk):
         # file types to accept
         filetypes = (
             ("WAV file", "*.wav"),
-            ("FLAC file", "*.flac"),
-            ("All files", "*.*")
+            ("FLAC file", "*.flac")
         )
         filename = fd.askopenfilename(
             title="Select a file",
@@ -731,12 +747,12 @@ class Report(tk.Toplevel):
         selected_file_label = ttk.Label(
             self,
             text="Selected file path: " + new_file_path,
-            font=("Helvetica", 10, "bold")
+            font=("Helvetica", 11, "bold")
         )
         directions_label = ttk.Label(
             self,
             text="Please select the type of report you wish you view",
-            font=("Helvetica", 10, "bold")
+            font=("Helvetica", 11, "bold")
         )
         scrollbar = ttk.Scrollbar(self)
         scrollbar.grid(column=0, row=7, sticky="ns")
@@ -760,23 +776,27 @@ class Report(tk.Toplevel):
             "LUFS Value",
             "Peak Value",
         )
-        lufs_value_label = Label(
+        lufs_value_label = ttk.Label(
             self,
-            text="Your Integrated Loudness (LUFS) = " + "{:.1f}".format(lufs)
+            text="Your Integrated Loudness (LUFS) = " + "{:.1f}".format(lufs),
+            font=("Helvetica", 10)
         )
-        peak_value_label = Label(
+        peak_value_label = ttk.Label(
             self,
-            text="Your True Peak (dBFS) = " + "{:.1f}".format(peak)
+            text="Your True Peak (dBFS) = " + "{:.1f}".format(peak),
+            font=("Helvetica", 10)
         )
-        sample_rate_label = Label(
+        sample_rate_label = ttk.Label(
             self,
-            text="Your Sample Rate (Hz) = " + str(sample_rate)
+            text="Your Sample Rate (Hz) = " + str(sample_rate),
+            font=("Helvetica", 10)
         )
-        num_channels_label = Label(
+        num_channels_label = ttk.Label(
             self,
-            text="Your number of channels = " + str(num_channels)
+            text="Your number of channels = " + str(num_channels),
+            font=("Helvetica", 10)
         )
-        blank_label = Label(
+        blank_label = ttk.Label(
             self,
             text=""
         )
@@ -801,6 +821,11 @@ class Report(tk.Toplevel):
             )
         )
 
+        def enter_key_clicked(event):
+            make_selection()
+
+        self.bind("<Return>", enter_key_clicked)
+
         def make_selection():
             selected_names = []
             for curr_name in listbox_of_platforms.curselection():
@@ -820,7 +845,7 @@ class Report(tk.Toplevel):
             width=20,
             bg="#6f67c2",
             fg="white",
-            font=("Helvetica", 11)
+            font=("Helvetica", 12)
         )
         style = ttk.Style()
         style.configure(
@@ -1004,6 +1029,17 @@ class AddNew(tk.Toplevel):
             )
         )
 
+        def enter_key_clicked(event):
+            self.add_new_standard(
+                platform_value_entry_tf.get(),
+                lufs_value_entry_tf.get(),
+                peak_value_entry_tf.get(),
+                self,
+                parent
+            )
+
+        self.bind("<Return>", enter_key_clicked)
+
         # set entry values to blank string variables
         platform_name_entry = StringVar(self)
         lufs_entry = StringVar(self)
@@ -1084,7 +1120,7 @@ class AddNew(tk.Toplevel):
         # some errors may be found with user input, destroy is a boolean variable that marks whether
         # an error was raised, if so the window may be destroyed
         destroy = True
-        if platform_name in parent.get_platform_names_lower():
+        if platform_name.lower().split() in parent.get_platform_names_lower():
             AddError(self, "Platform name already exists")
             destroy = False
         elif platform_name == "":
@@ -1141,6 +1177,7 @@ class AddError(tk.Toplevel):
         super().__init__(parent)
         # create basic window properties
         self.title("ERROR")
+        self.configure(bg="white")
         size = str(len(error)*6+100)+"x70"
         self.geometry(size)
 
@@ -1156,6 +1193,11 @@ class AddError(tk.Toplevel):
             command=lambda: self.exit_window(),
             style="Okay.TButton"
         )
+
+        def enter_key_clicked(event):
+            self.exit_window()
+
+        self.bind("<Return>", enter_key_clicked)
 
         # define look of our widgets
         style = ttk.Style()
@@ -1173,6 +1215,12 @@ class AddError(tk.Toplevel):
         # place our widgets on the screen
         error_msg.grid(column=0, row=0)
         okay.grid(column=0, row=1)
+
+        # make the window modal
+        self.focus_set()
+        self.grab_set()
+        self.transient(parent)
+        self.wait_window(self)
 
     def exit_window(self):
         """Exit the error window
@@ -1256,6 +1304,17 @@ class Modify(tk.Toplevel):
                 parent
             )
         )
+
+        def enter_key_clicked(event):
+            self.modify_existing_platforms(
+                selected_name.get(),
+                selected_lufs_peak.get(),
+                new_value_tf.get(),
+                parent
+            )
+
+        self.bind("<Return>", enter_key_clicked)
+
         blank_label = ttk.Label(
             self,
             text="",
@@ -1397,7 +1456,7 @@ class View(tk.Toplevel):
         # create basic window properties
         self.title("View Report")
         max_name_length = parent.get_max_platform_name_length()
-        size = str(max_name_length * 6 + 750) + "x300"
+        size = str(max_name_length * 6 + 800) + "x300"
         self.geometry(size)
 
         container = ttk.Frame(self)
@@ -1463,11 +1522,11 @@ class View(tk.Toplevel):
             style="Column.TLabel")
         lufs_result_label = ttk.Label(
             scrollable_frame,
-            text="LUFS Result",
+            text="LUFS Difference",
             style="Column.TLabel")
         peak_result_label = ttk.Label(
             scrollable_frame,
-            text="Peak Result",
+            text="Peak Difference",
             style="Column.TLabel")
         input_lufs_label = ttk.Label(
             scrollable_frame,
