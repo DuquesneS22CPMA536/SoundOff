@@ -164,7 +164,7 @@ class App(tk.Tk):
             connection.close()
         except sqlite3.OperationalError:
             # create an error window which will destroy the main window
-            NoStandardsWindow(self)
+            no_standards_file_window.NoStandardsWindow(self)
 
     def change_file_path(self, new_file_path):
         """Changes the file path.
@@ -244,7 +244,7 @@ class App(tk.Tk):
             connection.close()
         except sqlite3.OperationalError:
             # create an error window which will destroy the main window
-            NoStandardsWindow(self)
+            no_standards_file_window.NoStandardsWindow(self)
 
     def is_valid_input(self, input):
         """ Gives the standard names stored within the standard dictionary.
@@ -372,7 +372,7 @@ class App(tk.Tk):
                 connection.close()
             except sqlite3.OperationalError:
                 # create an error window which will destroy the main window
-                NoStandardsWindow(self)
+                no_standards_file_window.NoStandardsWindow(self)
         else:
             curr_value = list(self.get_platform_standard(name))
             curr_value[1] = new_value_float
@@ -389,7 +389,7 @@ class App(tk.Tk):
                 connection.close()
             except sqlite3.OperationalError:
                 # create an error window which will destroy the main window
-                NoStandardsWindow(self)
+                no_standards_file_window.NoStandardsWindow(self)
 
     def remove_platform(self, name):
         """ Removes the platform name passed
@@ -415,7 +415,7 @@ class App(tk.Tk):
             connection.close()
         except sqlite3.OperationalError:
             # create an error window which will destroy the main window
-            NoStandardsWindow(self)
+            no_standards_file_window.NoStandardsWindow(self)
 
     def get_max_platform_name_length(self):
         """Returns the length of the longest platform name
@@ -501,7 +501,7 @@ class App(tk.Tk):
         self.change_file_path(filename)
 
         if self.get_file_path() != "":
-            Report(self, self.get_file_path())
+            report_results_window.Report(self, self.get_file_path())
 
     def open_wav_file(self):
         """Opens the wav file and fetches its needed information.
