@@ -13,7 +13,7 @@ import view_standards_window
 from view_standards_window import *
 import report_results_window
 import no_standards_file_window
-
+import moviepy.editor as mp
 
 class App(tk.Tk):
     """A SoundOff window.
@@ -434,6 +434,7 @@ class App(tk.Tk):
         filetypes = (
             ("WAV file", "*.wav"),
             ("FLAC file", "*.flac"),
+            ("MP4 file", "*.mp4"),
             ("All files", "*.*")
         )
         filename = fd.askopenfilename(
@@ -462,13 +463,27 @@ class App(tk.Tk):
             Add possible errors here.
 
         """
-        data, rate = sf.read(self.get_file_path())
+        fileType = self.get_file_path().split('.') #split file path on '.'
+        fileType = fileType[-1] #take the last entry in the list from split as the file extension
+
+        #if the file is an MP4 file then open using moviepy and extract the audio
+        if fileType.upper() == 'MP4':
+            clip = mp.VideoFileClip(self.get_file_path())
+            audioFile = clip.audio
+            data = audioFile.to_soundarray(None,44100)
+            rate = 44100
+        else: #else open as an audio (wav/flac) file
+            data, rate = sf.read(self.get_file_path())
+
         length_file = len(data)
+
         if len(data.shape) > 1:
             n_channels = data.shape[1]
         else:
             n_channels = 1
+
         wav_info = (data, rate, length_file, n_channels)
+
         return wav_info
 
     def get_luf(self, wav_info):
@@ -519,11 +534,11 @@ class App(tk.Tk):
         current_peak1 = math.log(current_peak1, 10) * 20  # convert to decibels
 
         # resample using resampy
-        new_audio = resampy.resample(wav_info[0], wav_info[2], samples, axis=-1)
+        new_audio = resampy.resample(wav_info[0].transpose(), wav_info[2], samples, axis=-1)
         current_peak2 = np.max(np.abs(new_audio))  # find peak value
         current_peak2 = math.log(current_peak2, 10) * 20  # convert to decibels
 
-        # resample using polynomial
+        # resample using polyphase filtering
         new_audio = scipy.signal.resample_poly(wav_info[0], resampling_factor, 1)
         current_peak3 = np.max(np.abs(new_audio))  # find peak value
         current_peak3 = math.log(current_peak3, 10) * 20  # convert to decibels
