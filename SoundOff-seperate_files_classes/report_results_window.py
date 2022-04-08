@@ -13,8 +13,8 @@ class Report(tk.Toplevel):
     def __init__(self, parent, file_path):
         """Initializes the view report window
 
-        Will provide user with the LUFS and true peak value of the audio file passed. Will also prompt the user to
-        select the platform and standard type to test the audio file against.
+        Will provide user with the LUFS and true peak value of the audio file passed. Will also
+        prompt the user to select the platform and standard type to test the audio file against.
 
         Args:
           self: The instance of the report result window
@@ -40,7 +40,8 @@ class Report(tk.Toplevel):
 
         # get platform names to be used in drop-down widget
         platform_names = parent.get_platform_names()
-        # preselect first option so if a user does not click drop down list, it is assumed they wanted the first option
+        # preselect first option so if a user does not click drop down list, it is assumed
+        # they wanted the first option
         selected_lufs_peak = StringVar()
         selected_lufs_peak.set("LUFS and Peak")
 
@@ -51,17 +52,17 @@ class Report(tk.Toplevel):
             new_file_path = file_path
 
         # define labels and widgets to be placed on the screen
-        selected_file_label = Label(
+        selected_file_label = ttk.Label(
             self,
             text="Selected file path: " + new_file_path,
-            font=("Helvetica", 10, "bold")
+            font=("Helvetica", 11, "bold")
         )
-        directions_label = Label(
+        directions_label = ttk.Label(
             self,
             text="Please select the type of report you wish you view",
-            font=("Helvetica", 10, "bold")
+            font=("Helvetica", 11, "bold")
         )
-        scrollbar = Scrollbar(self)
+        scrollbar = ttk.Scrollbar(self)
         scrollbar.grid(column=0, row=7, sticky="ns")
         listbox_of_platforms = Listbox(
             self,
@@ -69,12 +70,12 @@ class Report(tk.Toplevel):
             fg="white",
             font="Helvetica",
             selectbackground="#2d2933",
-            selectmode=MULTIPLE,
+            selectmode="multiple",
             yscrollcommand=scrollbar.set,
             width=10 + parent.get_max_platform_name_length()
         )
         for name in platform_names:
-            listbox_of_platforms.insert(END, name)
+            listbox_of_platforms.insert("end", name)
 
         drop_lufs_peak = OptionMenu(
             self,
@@ -83,23 +84,27 @@ class Report(tk.Toplevel):
             "LUFS Value",
             "Peak Value",
         )
-        lufs_value_label = Label(
+        lufs_value_label = ttk.Label(
             self,
-            text="Your Integrated Loudness (LUFS) = " + "{:.1f}".format(lufs)
+            text="Your Integrated Loudness (LUFS) = " + "{:.1f}".format(lufs),
+            font=("Helvetica", 10)
         )
-        peak_value_label = Label(
+        peak_value_label = ttk.Label(
             self,
-            text="Your True Peak (dBFS) = " + "{:.1f}".format(peak)
+            text="Your True Peak (dBFS) = " + "{:.1f}".format(peak),
+            font=("Helvetica", 10)
         )
-        sample_rate_label = Label(
+        sample_rate_label = ttk.Label(
             self,
-            text="Your Sample Rate (Hz) = " + str(sample_rate)
+            text="Your Sample Rate (Hz) = " + str(sample_rate),
+            font=("Helvetica", 10)
         )
-        num_channels_label = Label(
+        num_channels_label = ttk.Label(
             self,
-            text="Your number of channels = " + str(num_channels)
+            text="Your number of channels = " + str(num_channels),
+            font=("Helvetica", 10)
         )
-        blank_label = Label(
+        blank_label = ttk.Label(
             self,
             text=""
         )
@@ -124,12 +129,17 @@ class Report(tk.Toplevel):
             )
         )
 
+        def enter_key_clicked(event):
+            make_selection()
+
+        self.bind("<Return>", enter_key_clicked)
+
         def make_selection():
             selected_names = []
             for curr_name in listbox_of_platforms.curselection():
                 selected_names.append(listbox_of_platforms.get(curr_name))
 
-            view_results_window.View(
+            View(
                 parent,
                 selected_names,
                 selected_lufs_peak.get(),
@@ -143,7 +153,7 @@ class Report(tk.Toplevel):
             width=20,
             bg="#6f67c2",
             fg="white",
-            font=("Helvetica", 11)
+            font=("Helvetica", 12)
         )
         style = ttk.Style()
         style.configure(
