@@ -8,10 +8,10 @@ def test_wavFileOneChannel():
     assert 1 == info[3]
 
     peak = a.get_peak(info)
-    assert -5.995 == round(peak,3)
+    assert -6.0 == round(peak,1)
 
     lufs = a.get_luf(info)
-    assert -9.045 == round(lufs,3)
+    assert -9.0 == round(lufs,1)
 
 def test_flacFileMultChannels():
     a = ac('2_Channel_24_48_minus6db.flac')
@@ -21,7 +21,20 @@ def test_flacFileMultChannels():
     assert 2 == info[3]
 
     peak = a.get_peak(info)
-    assert -0.738 == round(peak,3)
+    assert -0.7 == round(peak,1)
 
     lufs = a.get_luf(info)
-    assert -4.659 == round(lufs,3)
+    assert -4.7 == round(lufs,1)
+
+def test_mp4FileMultChannels():
+    a = ac('2_Channel_24_48_minus6db.mp4')
+    info = a.open_wav_file()
+    assert 44100 == info[1]
+    assert 443205 == info[2]
+    assert 2 == info[3]
+
+    peak = a.get_peak(info)
+    assert -1.2 == round(peak,1)
+
+    lufs = a.get_luf(info)
+    assert -5.5 == round(lufs,1)
