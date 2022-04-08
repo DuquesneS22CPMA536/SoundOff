@@ -48,10 +48,9 @@ class App(tk.Tk):
         self.title("SoundOff")
         width = self.winfo_screenwidth()
         height = self.winfo_screenheight()
-        size = str(width-10) + "x" + str(height-100)
+        size = str(width-100) + "x" + str(height-200)
         self.geometry(size)
         self.configure(bg="#2d2933")
-        self.iconbitmap('SoundOff.ico')
 
         # initialize path of the file being passed in
         self.file_path = ""
@@ -138,10 +137,10 @@ class App(tk.Tk):
         # place our widgets on the screen
         self.open_audio_file.grid(column=1, row=2, ipadx=30, ipady=18, pady=20, sticky="nsew")
         self.welcome_label.grid(column=1, row=0, pady=60, sticky="nsew")
-        self.blank_label2.grid(column=1, row=3, pady=height/3.8)
-        self.add_button.grid(column=0, row=10, pady=20, padx=width/8)
+        self.blank_label2.grid(column=1, row=3, pady=height/4.9)
+        self.add_button.grid(column=0, row=10, pady=20, padx=width/9)
         self.modify_button.grid(column=1, row=10, pady=20)
-        self.view_button.grid(column=2, row=10, pady=20, padx=width/9)
+        self.view_button.grid(column=2, row=10, pady=20, padx=width/10)
 
         # connect to standards database
         # make sure it's in the same folder as main file
