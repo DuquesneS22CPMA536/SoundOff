@@ -5,7 +5,7 @@ import scipy
 import math
 import resampy
 import statistics
-
+import moviepy.editor as mp
 
 class audio_calculations():
     """Opening file and calculations for LUF and True Peak.
@@ -65,13 +65,27 @@ class audio_calculations():
             Add possible errors here.
 
         """
-        data, rate = sf.read(self.get_file_path())
+        fileType = self.get_file_path().split('.') #split file path on '.'
+        fileType = fileType[-1] #take the last entry in the list from split as the file extension
+
+        #if the file is an MP4 file then open using moviepy and extract the audio
+        if fileType.upper() == 'MP4':
+            clip = mp.VideoFileClip(self.get_file_path())
+            audioFile = clip.audio
+            data = audioFile.to_soundarray(None,44100)
+            rate = 44100
+        else: #else open as an audio (wav/flac) file
+            data, rate = sf.read(self.get_file_path())
+
         length_file = len(data)
+
         if len(data.shape) > 1:
             n_channels = data.shape[1]
         else:
             n_channels = 1
+
         wav_info = (data, rate, length_file, n_channels)
+
         return wav_info
 
     def get_luf(self, wav_info):
