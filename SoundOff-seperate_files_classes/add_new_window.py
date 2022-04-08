@@ -6,15 +6,15 @@ from warning_window import *
 
 class AddNew(tk.Toplevel):
     """A window to prompt the user for a new platform name, max lufs value, and max peak value
-    
+
     Will make changes to the main window and standards.db file
 
     """
     def __init__(self, parent):
         """Initializes the add new platform window
 
-        Will prompt the user for a platform name, a max integrated (LUFS) value and true peak (dB) value. Will call the
-        add_new_standard method to make changes.
+        Will prompt the user for a platform name, a max integrated (LUFS) value and true peak (dB)
+        value. Will call the add_new_standard method to make changes.
 
         Args:
           self: The instance of the add new standard window
@@ -64,6 +64,17 @@ class AddNew(tk.Toplevel):
                 parent
             )
         )
+
+        def enter_key_clicked(event):
+            self.add_new_standard(
+                platform_value_entry_tf.get(),
+                lufs_value_entry_tf.get(),
+                peak_value_entry_tf.get(),
+                self,
+                parent
+            )
+
+        self.bind("<Return>", enter_key_clicked)
 
         # set entry values to blank string variables
         platform_name_entry = StringVar(self)
@@ -126,9 +137,9 @@ class AddNew(tk.Toplevel):
     def add_new_standard(self, platform_name, lufs_value, peak_value, window, parent):
         """Uses input from add new window to make changes to original window.
 
-        Will add a new platform with corresponding max integrated (LUFS) and max true peak (dB) by calling the
-        add_to_standard_dict method within the main window class. Calls the error window method when an error in
-        user input was made.
+        Will add a new platform with corresponding max integrated (LUFS) and max true peak (dB) by
+        calling the add_to_standard_dict method within the main window class. Calls the error window
+        method when an error in user input was made.
 
         Args:
             self: The instance of the add new standard window
@@ -142,10 +153,10 @@ class AddNew(tk.Toplevel):
         Any errors raised should be put here
 
         """
-        # some errors may be found with user input, destroy is a boolean variable that marks whether an error was
-        # raised, if so the window may be destroyed
+        # some errors may be found with user input, destroy is a boolean variable that marks whether
+        # an error was raised, if so the window may be destroyed
         destroy = True
-        if platform_name in parent.get_platform_names_lower():
+        if platform_name.lower().split() in parent.get_platform_names_lower():
             error_window.AddError(self, "Platform name already exists")
             destroy = False
         elif platform_name == "":
@@ -154,58 +165,23 @@ class AddNew(tk.Toplevel):
 
         if lufs_value != "":
             # make sure we have negative numbers
-            if lufs_value[0] == '-':
-                # we most likely have a valid input
-                if not lufs_value[1:].isnumeric():
-                    split_value = lufs_value[1:].split(".")
-                    if len(split_value) != 2:
-                        error_window.AddError(self, "Enter a numeric value")
-                        destroy = False
-                    elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
-                        if split_value[0] != "":
-                            error_window.AddError(self, "Enter a numeric value")
-                            destroy = False
-                # create a warning using warning_window if lufs value is especially low
-                elif int(lufs_value) < -100:
-                    warning_msg = "Did you mean for the LUFS value to equal: " + lufs_value + "?"
-                    warning_window.CreateWarning(parent, warning_msg)
-                    # value potentially changed by the warning window if user picked "yes" to delete
-                    if not parent.get_change():
-                        destroy = False
-                        parent.store_changes(False)
-            else:
-                error_window.AddError(self, "You must enter a negative LUFS value")
+            is_valid, error_msg = parent.is_valid_input(lufs_value)
+            if not is_valid:
+                error_window.AddError(self, error_msg)
                 destroy = False
 
         if peak_value != "":
-            if peak_value[0] == '-':
-                # we most likely have a valid input
-                if not peak_value[1:].isnumeric():
-                    split_value = peak_value[1:].split(".")
-                    if len(split_value) != 2:
-                        error_window.AddError(self, "Enter a numeric value")
-                        destroy = False
-                    elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
-                        if split_value[0] != "":
-                            error_window.AddError(self, "Enter a numeric value")
-                            destroy = False
-
-                # create a warning using warning_window if peak value is especially low
-                elif int(peak_value) < -100:
-                    warning_msg = "Did you mean for the peak value to equal: " + peak_value + "?"
-                    warning_window.CreateWarning(parent, warning_msg)
-                    # value potentially changed by the warning window if user picked "yes" to delete
-                    if not parent.get_change():
-                        destroy = False
-                        parent.store_changes(False)
-            else:
-                error_window.AddError(self, "You must enter a negative peak value")
+            is_valid, error_msg = parent.is_valid_input(peak_value)
+            if not is_valid:
+                error_window.AddError(self, error_msg)
                 destroy = False
+
         if lufs_value == "" and peak_value == "":
             error_window.AddError(self, "Please enter either a max integrated loudness or max true peak value.")
             destroy = False
 
-        # an error was not found with the latest input, changes can be made and the window can be destroyed
+        # an error was not found with the latest input, changes can be made and the window can be
+        # destroyed
         if destroy:
             parent.add_to_platforms(
                 platform_name,
