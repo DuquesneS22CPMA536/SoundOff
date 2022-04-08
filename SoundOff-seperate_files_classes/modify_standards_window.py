@@ -7,15 +7,15 @@ from warning_window import *
 class Modify(tk.Toplevel):
     """A window to modify or delete existing changes
 
-        Will take input from user to ask what changes should be made and then use the parent SoundOff window
-        to make changes
+        Will take input from user to ask what changes should be made and then use the parent
+        SoundOff window to make changes
 
     """
     def __init__(self, parent):
         """Initializes the modify/delete platform standards window
 
-        Will get user input for the standard to change/delete, the type of change to make (LUFS, Peak, Delete),
-        and the value to change LUFS or peak to.
+        Will get user input for the standard to change/delete, the type of change to make (LUFS,
+        Peak, Delete), and the value to change LUFS or peak to.
 
         Args:
           self: The instance of the modify/delete platform standards window
@@ -28,7 +28,7 @@ class Modify(tk.Toplevel):
         super().__init__(parent)
         # create basic window properties
         self.title("Modify Platform Standards")
-        self.geometry("688x100")
+        self.geometry("600x100")
         self.configure(bg="#2d2933")
 
         # preselect first option from drop-down menu to be picked
@@ -36,7 +36,7 @@ class Modify(tk.Toplevel):
         selected_name = StringVar()
         selected_name.set(platform_names[0])
         selected_lufs_peak = StringVar()
-        selected_lufs_peak.set("Integrated Loudness (LUFS)")
+        selected_lufs_peak.set("LUFS Value")
 
         # define our entry box input from user to be blank
         blank_value = StringVar(self)
@@ -51,8 +51,8 @@ class Modify(tk.Toplevel):
         drop_lufs_peak = OptionMenu(
             self,
             selected_lufs_peak,
-            "Integrated Loudness (LUFS)",
-            "True Peak (dBFS)",
+            "LUFS Value",
+            "Peak Value",
             "Delete Platform"
         )
         new_value_tf = Entry(
@@ -68,10 +68,20 @@ class Modify(tk.Toplevel):
                 selected_name.get(),
                 selected_lufs_peak.get(),
                 new_value_tf.get(),
-                self,
                 parent
             )
         )
+
+        def enter_key_clicked(event):
+            self.modify_existing_platforms(
+                selected_name.get(),
+                selected_lufs_peak.get(),
+                new_value_tf.get(),
+                parent
+            )
+
+        self.bind("<Return>", enter_key_clicked)
+
         blank_label = ttk.Label(
             self,
             text="",
@@ -88,7 +98,7 @@ class Modify(tk.Toplevel):
             font=("Helvetica", 11),
         )
         drop_lufs_peak.config(
-            width=25,
+            width=15,
             height=1,
             bg="#6f67c2",
             fg="white",
@@ -112,7 +122,7 @@ class Modify(tk.Toplevel):
         # place all of our labels and widgets on the screen
         drop_platforms.grid(column=0, row=0)
         drop_lufs_peak.grid(column=1, row=0)
-        new_value_tf.grid(column=2, row=0, padx=5)
+        new_value_tf.grid(column=2, row=0)
         enter_button.grid(column=0, row=2)
         blank_label.grid(column=0, row=1)
 
@@ -127,33 +137,31 @@ class Modify(tk.Toplevel):
             name,
             change_type,
             value,
-            window,
             parent
     ):
         """Uses input from add new window to make changes to original window.
 
-        Will add a new platform with corresponding max integrated (LUFS) and max true peak (dB) by calling the
-        add_to_standard_dict method within the main window class. Calls the error window method when an error in
-        user input was made.
+        Will add a new platform with corresponding max integrated (LUFS) and max true peak (dB) by
+        calling the add_to_standard method within the main window class. Calls the error window
+        method when an error in user input was made.
 
         Args:
             self: The instance of the modify/delete platform standards window
             name: The name of the platform being changed
             change_type: The type of change (LUFS, Peak, Delete) to make
             value: The new LUFS or Peak value to change to
-            window: The modify/delete window
             parent: App object, window it came from
 
         Raises:
             Any errors raised should be put here
 
         """
-        # some errors may be found with user input, destroy is a boolean variable that marks whether an error was
-        # raised, if so the window may be destroyed
+        # some errors may be found with user input, destroy is a boolean variable that marks whether
+        # an error was raised, if so the window may be destroyed
         destroy = True
 
-        # if a user decides to delete a standard, create a warning message by using the warning window to make sure
-        # the user wishes to make this change
+        # if a user decides to delete a standard, create a warning message by using the warning
+        # window to make sure the user wishes to make this change
         if change_type == "Delete Platform":
             destroy = False
             warning_msg = "Do you want to delete "+name+"?"
@@ -165,38 +173,20 @@ class Modify(tk.Toplevel):
                 parent.store_changes(False)
 
         elif value != "":
-            if value[0] == '-':
-                if not value[1:].isnumeric():
-                    split_value = value[1:].split(".")
-                    if len(split_value) != 2:
-                        error_window.AddError(self, "Enter a numeric value")
-                        destroy = False
-                    elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
-                        if split_value[0] != "":
-                            error_window.AddError(self, "Enter a numeric value")
-                            destroy = False
-                # create a warning using warning_window if peak value is especially low
-                elif int(value) < -100:
-                    warning_msg = "Did you mean for the " + change_type + " to equal: " + value + "?"
-                    warning_window.CreateWarning(parent, warning_msg)
-                    # value potentially changed by the warning window if user picked "yes" to delete
-                    if not parent.get_change():
-                        destroy = False
-                        parent.store_changes(False)
-
-            else:
-                error_window.AddError(self, "Must be negative")
+            is_valid, error_msg = parent.is_valid_input(value)
+            if not is_valid:
+                error_window.AddError(self, error_msg)
                 destroy = False
 
         # user is trying to enter a blank value
         else:
             curr_values = parent.get_platform_standard(name)
-            if change_type == "Integrated Loudness (LUFS)" and curr_values[1] == "":
+            if change_type == "LUFS Value" and curr_values[1] == "":
                 error_window.AddError(self, "Platform must have at least one valid standard")
                 destroy = False
-            elif change_type == "True Peak (dBFS)" and curr_values[0] == "":
+            elif change_type == "Peak Value" and curr_values[0] == "":
                 error_window.AddError(self, "Platform must have at least one valid standard")
                 destroy = False
         if destroy:
             parent.set_platform_standard(name, change_type, value)
-            window.destroy()
+            self.destroy()
