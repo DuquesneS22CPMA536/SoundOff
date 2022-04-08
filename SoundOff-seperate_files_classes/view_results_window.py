@@ -4,17 +4,17 @@ from tkinter import *
 
 
 class View(tk.Toplevel):
-    """A window to view the report of the lufs and peak values against the standards selected within the
-        report results window
+    """A window to view the report of the lufs and peak values against the standards selected within
+     the report results window
 
-        Will use a scrollable frame to print results.
+    Will use a scrollable frame to print results.
 
     """
     def __init__(self, parent, names_selected, lufs_or_peak, peak, lufs, report_window):
         """Initializes the view report window
 
-        Will print the report a user selected in the report results window. Will print the report in a scrollable
-        frame.
+        Will print the report a user selected in the report results window. Will print the report in
+        a scrollable frame.
 
         Args:
           self: The instance of the view results window
@@ -34,11 +34,11 @@ class View(tk.Toplevel):
         # create basic window properties
         self.title("View Report")
         max_name_length = parent.get_max_platform_name_length()
-        size = str(max_name_length * 6 + 750) + "x300"
+        size = str(max_name_length * 6 + 800) + "x300"
         self.geometry(size)
 
         container = ttk.Frame(self)
-        container.pack(fill=BOTH, expand=1)
+        container.pack(fill="both", expand=1)
         canvas = tk.Canvas(container)
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
@@ -100,11 +100,11 @@ class View(tk.Toplevel):
             style="Column.TLabel")
         lufs_result_label = ttk.Label(
             scrollable_frame,
-            text="LUFS Result",
+            text="LUFS Difference",
             style="Column.TLabel")
         peak_result_label = ttk.Label(
             scrollable_frame,
-            text="Peak Result",
+            text="Peak Difference",
             style="Column.TLabel")
         input_lufs_label = ttk.Label(
             scrollable_frame,
@@ -174,22 +174,22 @@ class View(tk.Toplevel):
                     scrollable_frame,
                     text=""
                 )
-            elif lufs - values[0] > .5:
+            elif values[0] - lufs > 2:
                 result_lufs = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(lufs-values[0]),
+                    text="{:.1f}".format(-(lufs-values[0])),
                     style="Pass.TLabel"
                 )
-            elif lufs - values[0] > -.5:
+            elif values[0] - lufs > - 2:
                 result_lufs = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(lufs-values[0]),
+                    text="{:.1f}".format(-(lufs-values[0])),
                     style="Close.TLabel"
                 )
             else:
                 result_lufs = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(lufs-values[0]),
+                    text="{:.1f}".format(-(lufs-values[0])),
                     style="Fail.TLabel"
                 )
             # test whether the input peak value is less than or equal to the max peak value
@@ -199,22 +199,22 @@ class View(tk.Toplevel):
                     scrollable_frame,
                     text=""
                 )
-            elif peak - values[1] > .5:
+            elif values[1] - peak > .5:
                 result_peak = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(peak-values[1]),
+                    text="{:.1f}".format(-(peak-values[1])),
                     style="Pass.TLabel"
                 )
-            elif peak - values[1] > -.5:
+            elif values[1] - peak > -.5:
                 result_peak = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(peak - values[1]),
+                    text="{:.1f}".format(-(peak-values[1])),
                     style="Close.TLabel"
                 )
             else:
                 result_peak = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(peak - values[1]),
+                    text="{:.1f}".format(-(peak-values[1])),
                     style="Fail.TLabel"
                 )
             # always place name on the screen
