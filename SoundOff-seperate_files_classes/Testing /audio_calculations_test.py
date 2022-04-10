@@ -1,0 +1,40 @@
+from audio_calculations import audio_calculations as ac
+
+def test_wavFileOneChannel():
+    a = ac('SineWave.wav')
+    info = a.open_wav_file()
+    assert 48000 == info[1]
+    assert 480000 == info[2]
+    assert 1 == info[3]
+
+    peak = a.get_peak(info)
+    assert -6.0 == round(peak,1)
+
+    lufs = a.get_luf(info)
+    assert -9.0 == round(lufs,1)
+
+def test_flacFileMultChannels():
+    a = ac('2_Channel_24_48_minus6db.flac')
+    info = a.open_wav_file()
+    assert 48000 == info[1]
+    assert 480000 == info[2]
+    assert 2 == info[3]
+
+    peak = a.get_peak(info)
+    assert -0.7 == round(peak,1)
+
+    lufs = a.get_luf(info)
+    assert -4.7 == round(lufs,1)
+
+def test_mp4FileMultChannels():
+    a = ac('2_Channel_24_48_minus6db.mp4')
+    info = a.open_wav_file()
+    assert 44100 == info[1]
+    assert 443205 == info[2]
+    assert 2 == info[3]
+
+    peak = a.get_peak(info)
+    assert -1.2 == round(peak,1)
+
+    lufs = a.get_luf(info)
+    assert -5.5 == round(lufs,1)

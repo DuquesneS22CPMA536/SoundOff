@@ -13,8 +13,8 @@ class Report(tk.Toplevel):
     def __init__(self, parent, file_path):
         """Initializes the view report window
 
-        Will provide user with the LUFS and true peak value of the audio file passed. Will also prompt the user to
-        select the platform and standard type to test the audio file against.
+        Will provide user with the LUFS and true peak value of the audio file passed. Will also
+        prompt the user to select the platform and standard type to test the audio file against.
 
         Args:
           self: The instance of the report result window
@@ -28,19 +28,20 @@ class Report(tk.Toplevel):
         super().__init__(parent)
         # create basic window properties
         self.title("Select Report")
-        self.geometry("490x200")
+        max_name_length = parent.get_max_platform_name_length()
+        size = str(max_name_length * 6 + 450) + "x500"
+        self.geometry(size)
 
         # get LUFS and peak from audio file
         wav_info = parent.open_wav_file()
         lufs = parent.get_luf(wav_info)
         peak = parent.get_peak(wav_info)
+        data, sample_rate, length_of_data, num_channels = parent.open_wav_file()
 
         # get platform names to be used in drop-down widget
         platform_names = parent.get_platform_names()
-        platform_names.insert(0, "All Available Platforms")
-        selected_name = StringVar()
-        # preselect first option so if a user does not click drop down list, it is assumed they wanted the first option
-        selected_name.set(platform_names[0])
+        # preselect first option so if a user does not click drop down list, it is assumed
+        # they wanted the first option
         selected_lufs_peak = StringVar()
         selected_lufs_peak.set("LUFS and Peak")
 
@@ -51,21 +52,31 @@ class Report(tk.Toplevel):
             new_file_path = file_path
 
         # define labels and widgets to be placed on the screen
-        selected_file_label = Label(
+        selected_file_label = ttk.Label(
             self,
             text="Selected file path: " + new_file_path,
-            font=("Helvetica", 10, "bold")
+            font=("Helvetica", 11, "bold")
         )
-        directions_label = Label(
+        directions_label = ttk.Label(
             self,
             text="Please select the type of report you wish you view",
-            font=("Helvetica", 10, "bold")
+            font=("Helvetica", 11, "bold")
         )
-        drop_platforms = OptionMenu(
+        scrollbar = ttk.Scrollbar(self)
+        scrollbar.grid(column=0, row=7, sticky="ns")
+        listbox_of_platforms = Listbox(
             self,
-            selected_name,
-            *platform_names,
+            bg="#6f67c2",
+            fg="white",
+            font="Helvetica",
+            selectbackground="#2d2933",
+            selectmode="multiple",
+            yscrollcommand=scrollbar.set,
+            width=10 + parent.get_max_platform_name_length()
         )
+        for name in platform_names:
+            listbox_of_platforms.insert("end", name)
+
         drop_lufs_peak = OptionMenu(
             self,
             selected_lufs_peak,
@@ -73,25 +84,44 @@ class Report(tk.Toplevel):
             "LUFS Value",
             "Peak Value",
         )
-        lufs_value_label = Label(
+        lufs_value_label = ttk.Label(
             self,
-            text="Your Integrated Loudness (LUFS) = " + "{:.2f}".format(lufs)
+            text="Your Integrated Loudness (LUFS) = " + "{:.1f}".format(lufs),
+            font=("Helvetica", 10)
         )
-        peak_value_label = Label(
+        peak_value_label = ttk.Label(
             self,
-            text="Your True Peak (dB) =" + "{:.2f}".format(peak)
+            text="Your True Peak (dBFS) = " + "{:.1f}".format(peak),
+            font=("Helvetica", 10)
         )
-        blank_label = Label(
+        sample_rate_label = ttk.Label(
+            self,
+            text="Your Sample Rate (Hz) = " + str(sample_rate),
+            font=("Helvetica", 10)
+        )
+        num_channels_label = ttk.Label(
+            self,
+            text="Your number of channels = " + str(num_channels),
+            font=("Helvetica", 10)
+        )
+        blank_label = ttk.Label(
             self,
             text=""
         )
         enter_button = ttk.Button(
             self,
-            text="Enter",
+            text="Select",
+            style="Enter.TButton",
+            command=lambda: make_selection()
+
+        )
+        select_all_button = ttk.Button(
+            self,
+            text="Select All Platforms",
             style="Enter.TButton",
             command=lambda: view_results_window.View(
                 parent,
-                selected_name.get(),
+                platform_names,
                 selected_lufs_peak.get(),
                 peak,
                 lufs,
@@ -99,18 +129,31 @@ class Report(tk.Toplevel):
             )
         )
 
+        def enter_key_clicked(event):
+            make_selection()
+
+        self.bind("<Return>", enter_key_clicked)
+
+        def make_selection():
+            selected_names = []
+            for curr_name in listbox_of_platforms.curselection():
+                selected_names.append(listbox_of_platforms.get(curr_name))
+
+            View(
+                parent,
+                selected_names,
+                selected_lufs_peak.get(),
+                peak,
+                lufs,
+                self
+            )
+
         # change look of labels and widgets
-        drop_platforms.config(
-            width=25,
-            bg="#6f67c2",
-            fg="white",
-            font=("Helvetica", 11)
-        )
         drop_lufs_peak.config(
             width=20,
             bg="#6f67c2",
             fg="white",
-            font=("Helvetica", 11)
+            font=("Helvetica", 12)
         )
         style = ttk.Style()
         style.configure(
@@ -121,13 +164,16 @@ class Report(tk.Toplevel):
             font=('Helvetica', 11)
         )
         selected_file_label.grid(column=0, row=0, columnspan=4, sticky="w")
-        directions_label.grid(column=0, row=4, columnspan=4, sticky="w")
-        drop_platforms.grid(column=0, row=5)
-        drop_lufs_peak.grid(column=1, row=5)
+        directions_label.grid(column=0, row=6, columnspan=4, sticky="w")
+        listbox_of_platforms.grid(column=0, row=7, sticky="w", padx=5)
+        drop_lufs_peak.grid(column=1, row=7, sticky="n")
         lufs_value_label.grid(column=0, row=1, sticky="w")
         peak_value_label.grid(column=0, row=2, sticky="w")
-        blank_label.grid(column=0, row=3, pady=10)
-        enter_button.grid(column=0, row=6, sticky="w")
+        sample_rate_label.grid(column=0, row=3, sticky="w")
+        num_channels_label.grid(column=0, row=4, sticky="w")
+        blank_label.grid(column=0, row=5, pady=10)
+        enter_button.grid(column=0, row=8, sticky="w", padx=5)
+        select_all_button.grid(column=0, row=9, sticky="w", padx=5)
 
         # make the window modal
         self.focus_set()

@@ -6,6 +6,7 @@
 - numpy
 - scipy
 - resampy
+- moviepy
 
 ## Once the modules above are installed, 
 - make sure the standards.db file is stored within the same folder as the main.py file
