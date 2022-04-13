@@ -1,0 +1,11 @@
+AES Streaming -16 -1
+Spotify -14 -1
+Spotify Loud -11 -2
+YouTube -14 -1
+Apple Music -16 (+/-1) -1
+Apple Podcast -16 (+/-1) -1
+TIDAL -14 -1
+Amazon Music -14 -2
+Amazon Alexa -14 -2
+Deezer -15 -1
+Netflix -15 -1
