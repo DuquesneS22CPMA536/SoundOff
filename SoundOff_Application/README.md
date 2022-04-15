@@ -1,14 +1,14 @@
 # To find and open the executable file: 
 
-## Using the Git hub desktop 
-1.	Make sure you are in the “dev” branch
-2.	On your computer where your Git-Hub files are located find the SoundOff folder
+## Using the GitHub desktop 
+1.	Make sure you are in the “main” branch
+2.	On your computer where your GitHub files are located find the SoundOff folder
 3.	Then go into the “SoundOff_Application” folder
 4.	Double click the “Soundoff.exe” file and it will open for you to use the software
 
-## Using the Git hub browser 
-1. In the Class Git Hub repository, navigate to the “Code” tab 
-2. Make sure you are in the “dev” branch
+## Using a browser 
+1. In the Class GitHub repository, navigate to the “Code” tab 
+2. Make sure you are in the “main” branch
 3. Find and open the folder named SoundOff_executable 
 4. You will need to click on and download 2 files from this folder and ensure they are placed in the same folder
 5. The first is the file named “SoundOff.exe”
