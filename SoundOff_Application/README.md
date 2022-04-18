@@ -10,12 +10,14 @@ The GitHub desktop is a desktop app downloaded from the GitHub website that allo
 3.	Then go into the “SoundOff_Application” folder
 4.	Double click the “Soundoff.exe” file and it will open for you to use the software
 
+
 ## Using a web browser 
+
 
 1. Go to the GitHub site repository: https://github.com/DuquesneS22CPMA536/SoundOff
 2. In the Class GitHub repository, navigate to the “Code” tab. 
 3. Make sure you are in the “main” branch
-4. Find and open the folder named SoundOff_executable 
+4. Find and open the folder named SoundOff_Application 
 5. You will need to click on and download 3 files from this folder and ensure they are placed in the same folder
 6. The first is the file named “SoundOff.exe”
    1. Note this file is 70.5 MB and may resist being opened/downloaded due to the nature of being downloaded from the internet – because of this, we recommend using the GitHub desktop application if possible
