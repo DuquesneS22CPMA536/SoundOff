@@ -23,6 +23,7 @@ The GitHub desktop is a desktop app downloaded from the GitHub website that allo
    1. The branch you are in is indicated at the part of the screen that is circled in red below.  
       If you are not already in main, you can click the arrow and a drop down of all branches 
       will appear. Click on the one named “main”
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/100814697/163881376-db2ab30f-cb67-4bd2-90a3-f3e20fd61350.png">
 
 
 4. Find and open the folder named SoundOff_Application (circled in red below)
