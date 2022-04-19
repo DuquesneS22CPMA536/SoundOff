@@ -1,19 +1,20 @@
+"""
+This module will create the window for the application.
+"""
+
+import tkinter as tk
+from tkinter import ttk
 from tkinter import filedialog as fd
 import sqlite3
+import subprocess
 import soundfile as sf
-import pyloudnorm as pyln
-import numpy as np
-import scipy
-import math
-import resampy
-import statistics
+import moviepy.editor as mp
 import add_new_window
 import modify_standards_window
-import view_standards_window
-from view_standards_window import *
+from view_standards_window import ViewPlatforms
 import report_results_window
 import no_standards_file_window
-import moviepy.editor as mp
+
 
 class App(tk.Tk):
     """A SoundOff window.
@@ -48,9 +49,12 @@ class App(tk.Tk):
         self.title("SoundOff")
         width = self.winfo_screenwidth()
         height = self.winfo_screenheight()
-        size = str(width-100) + "x" + str(height-200)
+        new_width = int(width/1.06)
+        new_height = int(height/1.28)
+        size = str(new_width) + "x" + str(new_height)
         self.geometry(size)
         self.configure(bg="#2d2933")
+        self.iconbitmap(True, "plswork.ico")
 
         # initialize path of the file being passed in
         self.file_path = ""
@@ -62,10 +66,10 @@ class App(tk.Tk):
         self.make_changes = False
 
         # define our labels and widgets to be placed on the screen
-        self.open_audio_file = ttk.Button(
+        self.open_file = ttk.Button(
             self,
             text="Select a file",
-            command=self.select_audio_file,
+            command=self.select_file,
             style="File.TButton"
         )
         self.welcome_label = ttk.Label(
@@ -101,7 +105,7 @@ class App(tk.Tk):
         self.view_button = ttk.Button(
             self,
             text="View existing platform standards",
-            command=lambda: view_standards_window.ViewPlatforms(self),
+            command=lambda: ViewPlatforms(self),
             style="Add.TButton"
         )
 
@@ -135,12 +139,12 @@ class App(tk.Tk):
         )
 
         # place our widgets on the screen
-        self.open_audio_file.grid(column=1, row=2, ipadx=30, ipady=18, pady=20, sticky="nsew")
+        self.open_file.grid(column=1, row=2, ipadx=30, ipady=18, pady=20, sticky="nsew")
         self.welcome_label.grid(column=1, row=0, pady=60, sticky="nsew")
-        self.blank_label2.grid(column=1, row=3, pady=height/4.9)
-        self.add_button.grid(column=0, row=10, pady=20, padx=width/9)
+        self.blank_label2.grid(column=1, row=3, pady=height/5.9)
+        self.add_button.grid(column=0, row=10, pady=20, padx=width/11)
         self.modify_button.grid(column=1, row=10, pady=20)
-        self.view_button.grid(column=2, row=10, pady=20, padx=width/10)
+        self.view_button.grid(column=2, row=10, pady=20, padx=width/12)
 
         # connect to standards database
         # make sure it's in the same folder as main file
@@ -245,40 +249,6 @@ class App(tk.Tk):
             # create an error window which will destroy the main window
             no_standards_file_window.NoStandardsWindow(self)
 
-    def is_valid_input(self, input):
-        """ Gives the standard names stored within the standard dictionary.
-
-        Returns the standard names currently being stored as list.
-
-        Args:
-            self: Instance of main window
-            curr_input: the LUFS or peak input a user is trying to include as a platform standard
-
-        Returns:
-            is_valid: a boolean value for whether the input is valid or not
-            error_msg: the error message to report if the input is not valid
-
-        Raises:
-            Any errors raised should be put here
-        """
-        error_msg = ""
-        is_valid = True
-        if input[0] == '-':
-            if not input[1:].isnumeric():
-                split_value = input[1:].split(".")
-                if len(split_value) != 2:
-                    error_msg = "Enter a numeric value"
-                    is_valid = False
-                elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
-                    if split_value[0] != "":
-                        error_msg = "Enter a numeric value"
-                        is_valid = False
-        else:
-            error_msg = "Must enter a negative value"
-            is_valid = False
-        return is_valid, error_msg
-
-
     def get_platform_names(self):
         """ Gives the standard names stored within the standard dictionary.
 
@@ -332,7 +302,6 @@ class App(tk.Tk):
 
         Raises:
             Any errors raised should be put here
-
         """
         return self.platforms.get(name)
 
@@ -473,8 +442,8 @@ class App(tk.Tk):
         """
         return self.make_changes
 
-    def select_audio_file(self):
-        """ Prompts user for an audio file path.
+    def select_file(self):
+        """ Prompts user for a file path (WAV, FLAC, MP4)
 
         Uses askopenfilename to select can audio file to be tested.
 
@@ -489,6 +458,7 @@ class App(tk.Tk):
         filetypes = (
             ("WAV file", "*.wav"),
             ("FLAC file", "*.flac"),
+            ("MP3 file", "*.mp3"),
             ("MP4 file", "*.mp4")
         )
         filename = fd.askopenfilename(
@@ -498,114 +468,44 @@ class App(tk.Tk):
         )
 
         self.change_file_path(filename)
-
-        if self.get_file_path() != "":
-            report_results_window.Report(self, self.get_file_path())
-
-    def open_wav_file(self):
-        """Opens the wav file and fetches its needed information.
-
-        Opens the selected wav file and fetches its sample rate, data itself, length of data, and
-        number of channels.
-
-        Args:
-            self: An App Object.
-
-        Returns:
-            A tuple containing the selected wav file's sample rate, data, length of data, and number
-             of channels.
-
-        Raises:
-            Add possible errors here.
-
-        """
-        file_type = self.get_file_path().split('.') #split file path on '.'
-        file_type = file_type[-1] #take the last entry in the list from split as the file extension
+        file_type = self.get_file_path().split('.')  # split file path on '.'
+        file_type = file_type[-1]  # take the last entry in the list from split as file extension
 
         # if the file is an MP4 file then open using moviepy and extract the audio
         if file_type.upper() == 'MP4':
             clip = mp.VideoFileClip(self.get_file_path())
             audio_file = clip.audio
-            data = audio_file.to_soundarray(None,44100)
+            data = audio_file.to_soundarray(None, 44100)
             rate = 44100
         # else open as an audio (wav/flac) file
         else:
             data, rate = sf.read(self.get_file_path())
-
-        length_file = len(data)
 
         if len(data.shape) > 1:
             n_channels = data.shape[1]
         else:
             n_channels = 1
 
-        wav_info = (data, rate, length_file, n_channels)
-        return wav_info
+        output_query = f"ffmpeg -i {filename} -af loudnorm=I=-16:print_format=summary -f null -"
+        output = subprocess.getoutput(output_query)
 
-    def get_luf(self, wav_info):
-        """Returns the integrated loudness in LUFS of an audio file.
+        list_split = output.split('\n')
 
-        Uses pyloudnorm to find the LUFS of an audio file found at a file path passed.
+        for i in range(len(list_split) - 1, 0, -1):
+            if list_split[i][0:16] == 'Input True Peak:':
+                lufs_string = list_split[i - 1]
+                peak_string = list_split[i]
+                break
 
-        Args:
-            self: Instance of main window
-            wav_info: a tuple of the selected wav file's sample rate, data, length of data, number
-                of channels
+        if self.get_file_path() != "":
+            report_results_window.Report(self,
+                                         self.get_file_path(),
+                                         rate,
+                                         n_channels,
+                                         float(lufs_string.split()[2]),
+                                         float(peak_string.split()[3]))
 
-        Returns:
-            The integrated loudness of the audio file in LUFS
-
-        Raises:
-            Any errors raised should be put here
-
-        """
-
-        meter = pyln.Meter(wav_info[1])  # create meter; wav_info[1] is the rate
-        lufs = meter.integrated_loudness(wav_info[0])  # get lufs value; wav_info[0] is the data
-        return lufs
-
-    def get_peak(self, wav_info):
-        """Returns the true peak in dBFS of an audio file.
-
-        Uses some method to find the peak of an audio file found at a file path passed.
-
-        Args:
-            self: Instance of main window
-            wav_info: a tuple of the selected wav file's sample rate, data, length of data, number
-                of channels
-
-        Returns:
-            The true peak of the audio file in dB
-
-        Raises:
-            Any errors raised should be put here
-
-        """
-        resampling_factor = 4  # use a resampling factor of 4
-
-        # calculate number of samples in resampled file
-        samples = wav_info[2] * resampling_factor  # wav_info[2] is the length of the data
-
-        # resample using FFT
-        new_audio = scipy.signal.resample(wav_info[0], samples)
-        current_peak1 = np.max(np.abs(new_audio))  # find peak value
-        current_peak1 = math.log(current_peak1, 10) * 20  # convert to decibels
-
-        # resample using resampy
-        new_audio = resampy.resample(wav_info[0].transpose(), wav_info[2], samples, axis=-1)
-        current_peak2 = np.max(np.abs(new_audio))  # find peak value
-        current_peak2 = math.log(current_peak2, 10) * 20  # convert to decibels
-
-        # resample using polyphase filtering
-        new_audio = scipy.signal.resample_poly(wav_info[0], resampling_factor, 1)
-        current_peak3 = np.max(np.abs(new_audio))  # find peak value
-        current_peak3 = math.log(current_peak3, 10) * 20  # convert to decibels
-
-        # get and return median of the three techniques
-        peak = statistics.median([current_peak1, current_peak2, current_peak3])
-        return peak
 
 if __name__ == "__main__":
     app = App()
     app.mainloop()
-    
