@@ -57,7 +57,7 @@ def test_One_8():
     assert -4.7 == round(lufs,1)
 
 #Two Channel - 24-bit Wave file
-def test_One_8():
+def test_Two_24():
     a = ac('testfiles/2_Channel_24_48_minus6db.wav')
     info = a.open_wav_file()
     assert 48000 == info[1]
@@ -71,7 +71,7 @@ def test_One_8():
     assert -4.7 == round(lufs,1)
 
 #Two Channel - 16-bit Wave file
-def test_One_8():
+def test_Two_16():
     a = ac('testfiles/Adele.wav')
     info = a.open_wav_file()
     assert 44100 == info[1]
@@ -85,7 +85,7 @@ def test_One_8():
     assert -8.5 == round(lufs,1)
 
 #Two Channel - 24-bit mp4 file
-def test_One_8():
+def test_Two_24_mp4():
     a = ac('2_Channel_24_48_minus6db.mp4')
     info = a.open_wav_file()
     assert 44100 == info[1]
