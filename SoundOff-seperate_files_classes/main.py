@@ -486,24 +486,27 @@ class App(tk.Tk):
         else:
             n_channels = 1
 
-        output_query = f"ffmpeg -i {filename} -af loudnorm=I=-16:print_format=summary -f null -"
-        output = subprocess.getoutput(output_query)
+        try:
+            output_query = f"ffmpeg -i {filename} -af loudnorm=I=-16:print_format=summary -f null -"
+            output = subprocess.getoutput(output_query)
 
-        list_split = output.split('\n')
+            list_split = output.split('\n')
 
-        for i in range(len(list_split) - 1, 0, -1):
-            if list_split[i][0:16] == 'Input True Peak:':
-                lufs_string = list_split[i - 1]
-                peak_string = list_split[i]
-                break
+            for i in range(len(list_split) - 1, 0, -1):
+                if list_split[i][0:16] == 'Input True Peak:':
+                    lufs_string = list_split[i - 1]
+                    peak_string = list_split[i]
+                    break
 
-        if self.get_file_path() != "":
-            report_results_window.Report(self,
-                                         self.get_file_path(),
-                                         rate,
-                                         n_channels,
-                                         float(lufs_string.split()[2]),
-                                         float(peak_string.split()[3]))
+            if self.get_file_path() != "":
+                report_results_window.Report(self,
+                                             self.get_file_path(),
+                                             rate,
+                                             n_channels,
+                                             float(lufs_string.split()[2]),
+                                             float(peak_string.split()[3]))
+        except Exception as e:
+            error_window.AddError(self, "Cannot find LUFS or Peak for this file")
 
 
 if __name__ == "__main__":
