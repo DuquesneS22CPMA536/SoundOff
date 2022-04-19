@@ -1,3 +1,7 @@
+"""
+This module will create a warning window and will change the make_changes
+attribute if a user chooses to make the changes that caused the warning.
+"""
 import tkinter as tk
 from tkinter import ttk
 
@@ -42,7 +46,7 @@ class CreateWarning(tk.Toplevel):
             command=lambda: self.exit_window("Yes", parent),
             style="Yes_No.TButton"
         )
-        no = ttk.Button(
+        no_button = ttk.Button(
             self,
             text="No",
             command=lambda: self.exit_window("No", parent),
@@ -65,7 +69,7 @@ class CreateWarning(tk.Toplevel):
         # place labels and widgets on screen
         warning_msg.grid(column=0, row=0, columnspan=2)
         yes.grid(column=0, row=1)
-        no.grid(column=1, row=1)
+        no_button.grid(column=1, row=1)
 
         # make the window modal
         self.focus_set()
@@ -76,7 +80,8 @@ class CreateWarning(tk.Toplevel):
     def exit_window(self, response, parent):
         """Will store changes based on user response from the warning window.
 
-        Will use store_changes() function to store whether a user wishes to keep changes made or not.
+        Will use store_changes() function to store whether a user wishes to keep
+        changes made or not.
 
         Args:
             self: The instance of the create warning window

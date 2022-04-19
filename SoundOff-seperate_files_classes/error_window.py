@@ -1,3 +1,7 @@
+"""
+This module will display an error message raised within the user input in either
+adding a new platform or modifying an existing one.
+"""
 import tkinter as tk
 from tkinter import ttk
 
@@ -40,11 +44,6 @@ class AddError(tk.Toplevel):
             command=lambda: self.exit_window(),
             style="Okay.TButton"
         )
-        
-        def enter_key_clicked(event):
-            self.exit_window()
-
-        self.bind("<Return>", enter_key_clicked)
 
         # define look of our widgets
         style = ttk.Style()

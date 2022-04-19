@@ -1,6 +1,13 @@
+"""
+This module will display the lufs value, true peak value, sample rate, and
+number of channels of a file passed. It will also prompt the user to pick
+a certain report of these values against available platforms.
+"""
 import tkinter as tk
 from tkinter import ttk
-from tkinter import *
+from tkinter import StringVar
+from tkinter import Listbox
+from tkinter import OptionMenu
 import view_results_window
 
 
@@ -10,7 +17,7 @@ class Report(tk.Toplevel):
         Will prompt the user to select the type of report (which standards to test against) to view.
 
     """
-    def __init__(self, parent, file_path):
+    def __init__(self, parent, file_path, rate, num_channels, lufs, peak):
         """Initializes the view report window
 
         Will provide user with the LUFS and true peak value of the audio file passed. Will also
@@ -20,6 +27,10 @@ class Report(tk.Toplevel):
           self: The instance of the report result window
           parent: App object, window it came from
           file_path: The path of the file selected
+          rate: The rate of the file path
+          num_channels: The number of channels of the file path
+          lufs: the lufs value
+          peak: the peak value
 
         Raises:
           Any errors raised should be put here
@@ -31,12 +42,6 @@ class Report(tk.Toplevel):
         max_name_length = parent.get_max_platform_name_length()
         size = str(max_name_length * 6 + 450) + "x500"
         self.geometry(size)
-
-        # get LUFS and peak from audio file
-        wav_info = parent.open_wav_file()
-        lufs = parent.get_luf(wav_info)
-        peak = parent.get_peak(wav_info)
-        data, sample_rate, length_of_data, num_channels = parent.open_wav_file()
 
         # get platform names to be used in drop-down widget
         platform_names = parent.get_platform_names()
@@ -86,17 +91,17 @@ class Report(tk.Toplevel):
         )
         lufs_value_label = ttk.Label(
             self,
-            text="Your Integrated Loudness (LUFS) = " + "{:.1f}".format(lufs),
+            text=f'Your Integrated Loudness (LUFS) = {lufs:.1f}',
             font=("Helvetica", 10)
         )
         peak_value_label = ttk.Label(
             self,
-            text="Your True Peak (dBFS) = " + "{:.1f}".format(peak),
+            text=f'Your True Peak (dBFS) = {peak:.1f}',
             font=("Helvetica", 10)
         )
         sample_rate_label = ttk.Label(
             self,
-            text="Your Sample Rate (Hz) = " + str(sample_rate),
+            text="Your Sample Rate (Hz) = " + str(rate),
             font=("Helvetica", 10)
         )
         num_channels_label = ttk.Label(
@@ -139,7 +144,7 @@ class Report(tk.Toplevel):
             for curr_name in listbox_of_platforms.curselection():
                 selected_names.append(listbox_of_platforms.get(curr_name))
 
-            View(
+            view_results_window.View(
                 parent,
                 selected_names,
                 selected_lufs_peak.get(),

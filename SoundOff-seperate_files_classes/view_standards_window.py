@@ -1,6 +1,9 @@
+"""
+This module will display all of the platforms with the standards currently being
+stored within the standards.db file.
+"""
 import tkinter as tk
 from tkinter import ttk
-from tkinter import *
 
 
 class ViewPlatforms(tk.Toplevel):
@@ -12,8 +15,8 @@ class ViewPlatforms(tk.Toplevel):
     def __init__(self, parent):
         """Initializes the View Platforms window
 
-        Will display current directory of platforms by using the get_platform_names method and the standards of these
-        platforms by using the get_platform_standard method.
+        Will display current directory of platforms by using the get_platform_names method
+        and the standards of these platforms by using the get_platform_standard method.
 
         Args:
           self: The instance of the view platforms window
@@ -33,7 +36,7 @@ class ViewPlatforms(tk.Toplevel):
 
         # define a scrollable frame
         container = ttk.Frame(self)
-        container.pack(fill=BOTH, expand=1)
+        container.pack(fill="both", expand=1)
         canvas = tk.Canvas(container)
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
@@ -94,11 +97,11 @@ class ViewPlatforms(tk.Toplevel):
             values = parent.get_platform_standard(name)
             # make sure the value is not null before trying to format it
             if values[0] != "":
-                lufs = "{:.1f}".format(values[0])
+                lufs = f"{values[0]:.1f}"
             else:
                 lufs = ""
             if values[1] != "":
-                peak = "{:.1f}".format(values[1])
+                peak = f"{values[1]:.1f}"
             else:
                 peak = ""
 

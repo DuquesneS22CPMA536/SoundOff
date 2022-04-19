@@ -1,7 +1,11 @@
-from tkinter import *
+"""
+This module will add a new platform to both the standards.db file and the standards
+stored within the main window.
+"""
+import tkinter as tk
+from tkinter import ttk
+from tkinter import StringVar
 import error_window
-import warning_window
-from warning_window import *
 
 
 class AddNew(tk.Toplevel):
@@ -60,7 +64,6 @@ class AddNew(tk.Toplevel):
                 platform_value_entry_tf.get(),
                 lufs_value_entry_tf.get(),
                 peak_value_entry_tf.get(),
-                self,
                 parent
             )
         )
@@ -70,7 +73,6 @@ class AddNew(tk.Toplevel):
                 platform_value_entry_tf.get(),
                 lufs_value_entry_tf.get(),
                 peak_value_entry_tf.get(),
-                self,
                 parent
             )
 
@@ -134,7 +136,7 @@ class AddNew(tk.Toplevel):
         self.transient(parent)
         self.wait_window(self)
 
-    def add_new_standard(self, platform_name, lufs_value, peak_value, window, parent):
+    def add_new_standard(self, platform_name, lufs_value, peak_value, parent):
         """Uses input from add new window to make changes to original window.
 
         Will add a new platform with corresponding max integrated (LUFS) and max true peak (dB) by
@@ -146,7 +148,6 @@ class AddNew(tk.Toplevel):
             platform_name: The name of the platform
             lufs_value: The max integrated (LUFS) value
             peak_value: The max true peak (dB)
-            window: The add new window
             parent: App object, window it came from
 
         Raises:
@@ -165,19 +166,22 @@ class AddNew(tk.Toplevel):
 
         if lufs_value != "":
             # make sure we have negative numbers
-            is_valid, error_msg = parent.is_valid_input(lufs_value)
+            is_valid, error_msg = is_valid_input(lufs_value)
             if not is_valid:
                 error_window.AddError(self, error_msg)
                 destroy = False
 
         if peak_value != "":
-            is_valid, error_msg = parent.is_valid_input(peak_value)
+            is_valid, error_msg = is_valid_input(peak_value)
             if not is_valid:
                 error_window.AddError(self, error_msg)
                 destroy = False
 
         if lufs_value == "" and peak_value == "":
-            error_window.AddError(self, "Please enter either a max integrated loudness or max true peak value.")
+            error_window.AddError(
+                self,
+                "Please enter either a max integrated loudness or max true peak value."
+            )
             destroy = False
 
         # an error was not found with the latest input, changes can be made and the window can be
@@ -187,4 +191,37 @@ class AddNew(tk.Toplevel):
                 platform_name,
                 (lufs_value, peak_value)
             )
-            window.destroy()
+            self.destroy()
+
+
+def is_valid_input(curr_input):
+    """ Gives the standard names stored within the standard dictionary.
+
+    Returns the standard names currently being stored as list.
+
+    Args:
+        curr_input: the LUFS or peak input a user is trying to include as a platform standard
+
+    Returns:
+        is_valid: a boolean value for whether the input is valid or not
+        error_msg: the error message to report if the input is not valid
+
+    Raises:
+        Any errors raised should be put here
+    """
+    error_msg = ""
+    is_valid = True
+    if curr_input[0] == '-':
+        if not curr_input[1:].isnumeric():
+            split_value = curr_input[1:].split(".")
+            if len(split_value) != 2:
+                error_msg = "Enter a numeric value"
+                is_valid = False
+            elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
+                if split_value[0] != "":
+                    error_msg = "Enter a numeric value"
+                    is_valid = False
+    else:
+        error_msg = "Must enter a negative value"
+        is_valid = False
+    return is_valid, error_msg

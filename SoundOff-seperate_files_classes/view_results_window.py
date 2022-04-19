@@ -1,6 +1,9 @@
+"""
+This module will create a report showing the amount the file passed will pass by or
+fail by for the type of standard specified.
+"""
 import tkinter as tk
 from tkinter import ttk
-from tkinter import *
 
 
 class View(tk.Toplevel):
@@ -108,11 +111,11 @@ class View(tk.Toplevel):
             style="Column.TLabel")
         input_lufs_label = ttk.Label(
             scrollable_frame,
-            text="Input Integrated Loudness (LUFS) from file: " + "{:.1f}".format(lufs),
+            text=f"Input Integrated Loudness (LUFS) from file: {lufs:.1f}",
             style="Input.TLabel")
         input_peak_label = ttk.Label(
             scrollable_frame,
-            text="Input True Peak (dBFS) from file: " + "{:.1f}".format(peak),
+            text=f"Input True Peak (dBFS) from file: {peak:.1f}",
             style="Input.TLabel")
 
         # always display platform name header
@@ -146,11 +149,11 @@ class View(tk.Toplevel):
             values = parent.get_platform_standard(name)
             # format the max lufs and peak to only display one decimal point
             if values[0] != "":
-                lufs_from_platform = "{:.1f}".format(values[0])
+                lufs_from_platform = f"{values[0]:.1f}"
             else:
                 lufs_from_platform = ""
             if values[1] != "":
-                peak_from_platform = "{:.1f}".format(values[1])
+                peak_from_platform = f"{values[1]:.1f}"
             else:
                 peak_from_platform = ""
 
@@ -177,19 +180,19 @@ class View(tk.Toplevel):
             elif values[0] - lufs > 2:
                 result_lufs = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(-(lufs-values[0])),
+                    text=f"{-(lufs-values[0]):.1f}",
                     style="Pass.TLabel"
                 )
             elif values[0] - lufs > - 2:
                 result_lufs = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(-(lufs-values[0])),
+                    text=f"{-(lufs-values[0]):.1f}",
                     style="Close.TLabel"
                 )
             else:
                 result_lufs = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(-(lufs-values[0])),
+                    text=f"{-(lufs-values[0]):.1f}",
                     style="Fail.TLabel"
                 )
             # test whether the input peak value is less than or equal to the max peak value
@@ -202,19 +205,19 @@ class View(tk.Toplevel):
             elif values[1] - peak > .5:
                 result_peak = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(-(peak-values[1])),
+                    text=f"{-(peak-values[1]):.1f}",
                     style="Pass.TLabel"
                 )
             elif values[1] - peak > -.5:
                 result_peak = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(-(peak-values[1])),
+                    text=f"{-(peak-values[1]):.1f}",
                     style="Close.TLabel"
                 )
             else:
                 result_peak = ttk.Label(
                     scrollable_frame,
-                    text="{:.1f}".format(-(peak-values[1])),
+                    text=f"{-(peak-values[1]):.1f}",
                     style="Fail.TLabel"
                 )
             # always place name on the screen
