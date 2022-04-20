@@ -30,13 +30,12 @@ The GitHub desktop is a desktop app downloaded from the GitHub website that allo
 
 <img width="392" alt="image" src="https://user-images.githubusercontent.com/100814697/163881075-d870c62d-9af5-4dd3-9aaf-5c0ccb7e263c.png">
 
-5. You will need to click on and download 3 files from this folder and ensure they are placed in the same folder
-6. The first is the file named “SoundOff.exe”
-   1. Note this file is 70.5 MB and may resist being opened/downloaded due to the nature of being downloaded from the internet – because of this, we    recommend using the GitHub desktop application if possible
+5. You will need to download the "Soundoff Executable Bundle" zip file. To do this, click on this zip file, and on the next page select "Download".
+   1. Note this file is 98.3 MB and may resist being opened/downloaded due to the nature of being downloaded from the internet – because of this, we    recommend using the GitHub desktop application if possible
    2. Instructions on how to circumnavigate the resistance of files being opened can be found here:https://answers.microsoft.com/en-us/windows/forum/all/this-file-is-potentially-unsafe-to-open-need/b4038008-de01-44cc-8759-38970488b47b
-7. The second is named “standards.db”
-8. The third is a file named "Soundoff.ico"
-9. Once both files are downloaded and within the same folder, you can double click the “SoundOff.exe” file and it will open for you to use the software.
+6. Once the zip file is downloaded, right click on this file from file explorer, and select "Extract All". Change the file path, if necessary.
+7. Finally, within the extracted folder, you will find the "SoundOff.exe" file. Double click on this file to run the program.
+   Note that you should not remove the other files stored within this file.
 
 
 

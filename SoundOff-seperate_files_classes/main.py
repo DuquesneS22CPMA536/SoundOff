@@ -14,7 +14,7 @@ import modify_standards_window
 from view_standards_window import ViewPlatforms
 import report_results_window
 import no_standards_file_window
-
+import error_window
 
 class App(tk.Tk):
     """A SoundOff window.
@@ -54,7 +54,7 @@ class App(tk.Tk):
         size = str(new_width) + "x" + str(new_height)
         self.geometry(size)
         self.configure(bg="#2d2933")
-        self.iconbitmap(True, "plswork.ico")
+        self.iconbitmap(True, "SoundOff.ico")
 
         # initialize path of the file being passed in
         self.file_path = ""
@@ -458,7 +458,6 @@ class App(tk.Tk):
         filetypes = (
             ("WAV file", "*.wav"),
             ("FLAC file", "*.flac"),
-            ("MP3 file", "*.mp3"),
             ("MP4 file", "*.mp4")
         )
         filename = fd.askopenfilename(
@@ -487,26 +486,37 @@ class App(tk.Tk):
             n_channels = 1
 
         try:
+            #create query that would normally be run in the command prompt
             output_query = f"ffmpeg -i {filename} -af loudnorm=I=-16:print_format=summary -f null -"
-            output = subprocess.getoutput(output_query)
+            output = subprocess.getoutput(output_query) #run the query and receive the output
 
-            list_split = output.split('\n')
+            list_split = output.split('\n') #split the output on new lines
 
+            #initialize lufs and peak values to default -99.9
+            lufs_value = -99.9
+            peak_value = -99.9
+
+            #loop through the lines of list_split starting at the end and working backwards
             for i in range(len(list_split) - 1, 0, -1):
+                #if the line starts with 'Input True Peak:'
                 if list_split[i][0:16] == 'Input True Peak:':
-                    lufs_string = list_split[i - 1]
-                    peak_string = list_split[i]
-                    break
+                    lufs_string = list_split[i - 1] #then the lufs line is the line preceeding current line
+                    peak_string = list_split[i] #and the peak line is the current line
+
+                    lufs_value = (float(lufs_string.split()[2])) #split the lufs string on spaces and take the 3rd element
+                    peak_value = (float(peak_string.split()[3])) #split the peak string on spaces and take the 4th element
+                    break #we don't need to finish the loop since we found what we were looking for
 
             if self.get_file_path() != "":
                 report_results_window.Report(self,
                                              self.get_file_path(),
                                              rate,
                                              n_channels,
-                                             float(lufs_string.split()[2]),
-                                             float(peak_string.split()[3]))
+                                             lufs_value,
+                                             peak_value)
         except Exception as e:
-            error_window.AddError(self, "Cannot find LUFS or Peak for this file")
+            pass
+            error_window.AddError(self, "Cannot find LUFS or Peak for this file.")
 
 
 if __name__ == "__main__":
