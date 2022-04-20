@@ -487,7 +487,7 @@ class App(tk.Tk):
 
         try:
             #create query that would normally be run in the command prompt
-            output_query = f"ffmpeg -i {filename} -af loudnorm=I=-16:print_format=summary -f null -"
+            output_query = ['ffmpeg', '-i', filename, '-af', 'loudnorm=I=-16:print_format=summary', '-f', 'null', '-']
             output = subprocess.getoutput(output_query) #run the query and receive the output
 
             list_split = output.split('\n') #split the output on new lines
