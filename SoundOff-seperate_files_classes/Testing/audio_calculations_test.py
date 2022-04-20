@@ -77,14 +77,14 @@ def test_Two_24_mp4():
     assert -5.0 == round(info[3],1)
 
     assert -0.4 == round(info[4],1)
-    
+
 #Six Channel - 24-bit wave file
 def test_Six_24_Wave():
     a = ac('testfiles/6_Channel_White_Noise.wav')
     info = a.select_file()
-    assert 44100 == info[1]
+    assert 48000 == info[1]
     assert 6 == info[2]
 
-    assert -5.0 == round(info[3],1)
+    assert -0.2 == round(info[3],1)
 
-    assert -6.0 == round(info[4],1)
+    assert -0.1 == round(info[4],1)
