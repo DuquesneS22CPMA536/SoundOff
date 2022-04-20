@@ -504,7 +504,7 @@ class App(tk.Tk):
                     peak_string = list_split[i] #and the peak line is the current line
 
                     lufs_value = (float(lufs_string.split()[2])) #split the lufs string on spaces and take the 3rd element
-                    peak_value = (float(peak_string.split()[3])) #split the peak string on spaces and take the 4rd element
+                    peak_value = (float(peak_string.split()[3])) #split the peak string on spaces and take the 4th element
                     break #we don't need to finish the loop since we found what we were looking for
 
             if self.get_file_path() != "":
