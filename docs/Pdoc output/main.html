@@ -1,0 +1,2116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>main API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>main</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from tkinter import filedialog as fd
+import sqlite3
+import soundfile as sf
+import pyloudnorm as pyln
+import numpy as np
+import scipy
+import math
+import resampy
+import statistics
+import add_new_window
+import modify_standards_window
+import view_standards_window
+from view_standards_window import *
+import report_results_window
+import no_standards_file_window
+import moviepy.editor as mp
+
+class App(tk.Tk):
+    &#34;&#34;&#34;A SoundOff window.
+
+    Will hold a primary window with functions to select a wav file, test the wav file&#39;s peak value
+    against a standard&#39;s peak value, and test the wav file&#39;s LUF value against a standard&#39;s LUF
+    value.
+
+    Attributes:
+        file_path: The current audio file path to be tested. Can change frequently. String object.
+        platforms: a dictionary of current platforms with lufs and peak values
+        make_changes: a boolean value used by the warning window to hold whether the user wishes to
+        make a change
+      &#34;&#34;&#34;
+
+    def __init__(self, master=None):
+        &#34;&#34;&#34;Initializes the main window application
+
+        Will hold buttons for the main functions and store platform information by accessing the
+        standards.db file
+
+        Args:
+          self: The main window
+          master: no master, this is the first instance of a window
+
+        Raises:
+          Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        super().__init__(master)
+        # create basic window properties
+        self.title(&#34;SoundOff&#34;)
+        width = self.winfo_screenwidth()
+        height = self.winfo_screenheight()
+        size = str(width-100) + &#34;x&#34; + str(height-200)
+        self.geometry(size)
+        self.configure(bg=&#34;#2d2933&#34;)
+
+        # initialize path of the file being passed in
+        self.file_path = &#34;&#34;
+
+        # a dictionary to store platform standards, initialized to query from standards database
+        self.platforms = {}
+
+        # True/False value to store whether to make changes after warning message
+        self.make_changes = False
+
+        # define our labels and widgets to be placed on the screen
+        self.open_audio_file = ttk.Button(
+            self,
+            text=&#34;Select a file&#34;,
+            command=self.select_audio_file,
+            style=&#34;File.TButton&#34;
+        )
+        self.welcome_label = ttk.Label(
+            self,
+            text=&#34;Welcome to SoundOff!&#34;,
+            style=&#34;Greeting.TLabel&#34;
+        )
+        self.blank_label = ttk.Label(
+            self,
+            text=&#34;&#34;,
+            width=16,
+            style=&#34;Blank.TLabel&#34;
+        )
+        self.blank_label2 = ttk.Label(
+            self,
+            text=&#34;&#34;,
+            width=16,
+            style=&#34;Blank.TLabel&#34;
+        )
+        # create buttons dealing with platforms
+        self.add_button = ttk.Button(
+            self,
+            text=&#34;Add a new platform&#34;,
+            command=lambda: add_new_window.AddNew(self),
+            style=&#34;Add.TButton&#34;
+        )
+        self.modify_button = ttk.Button(
+            self,
+            text=&#34;Modify/Delete existing platform standards&#34;,
+            command=lambda: modify_standards_window.Modify(self),
+            style=&#34;Add.TButton&#34;
+        )
+        self.view_button = ttk.Button(
+            self,
+            text=&#34;View existing platform standards&#34;,
+            command=lambda: view_standards_window.ViewPlatforms(self),
+            style=&#34;Add.TButton&#34;
+        )
+
+        # define the look of our labels and widgets
+        style = ttk.Style()
+        style.configure(
+            &#34;Greeting.TLabel&#34;,
+            foreground=&#34;white&#34;,
+            background=&#34;#2d2933&#34;,
+            font=(&#39;Helvetica&#39;, 35)
+        )
+        style.configure(
+            &#34;File.TButton&#34;,
+            foreground=&#34;#2d2933&#34;,
+            background=&#34;white&#34;,
+            border=0,
+            font=(&#39;Helvetica&#39;, 18)
+        )
+        style.configure(
+            &#34;Add.TButton&#34;,
+            foreground=&#34;#2d2933&#34;,
+            background=&#34;white&#34;,
+            border=0,
+            font=(&#39;Helvetica&#39;, 10)
+        )
+        style.configure(
+            &#34;Blank.TLabel&#34;,
+            foreground=&#34;#2d2933&#34;,
+            background=&#34;#2d2933&#34;,
+            font=(&#39;Helvetica&#39;, 8)
+        )
+
+        # place our widgets on the screen
+        self.open_audio_file.grid(column=1, row=2, ipadx=30, ipady=18, pady=20, sticky=&#34;nsew&#34;)
+        self.welcome_label.grid(column=1, row=0, pady=60, sticky=&#34;nsew&#34;)
+        self.blank_label2.grid(column=1, row=3, pady=height/4.9)
+        self.add_button.grid(column=0, row=10, pady=20, padx=width/9)
+        self.modify_button.grid(column=1, row=10, pady=20)
+        self.view_button.grid(column=2, row=10, pady=20, padx=width/10)
+
+        # connect to standards database
+        # make sure it&#39;s in the same folder as main file
+        try:
+            connection = sqlite3.connect(&#39;standards.db&#39;)
+            cursor = connection.cursor()
+
+            # define empty dictionary to store platform names and LUFS and peak max values
+            not_sorted_platforms = {}
+            platform_info = cursor.execute(&#39;&#39;&#39;SELECT * FROM Standards&#39;&#39;&#39;)
+            for platform_name in platform_info:
+                # key for dictionary = platform name
+                # value for dictionary = (lufs,peak)
+                not_sorted_platforms[platform_name[0]] = (platform_name[1], platform_name[2])
+            # sort by platform names
+            sorted_names = sorted(not_sorted_platforms)
+            self.platforms = {key: not_sorted_platforms[key] for key in sorted_names}
+            # close connection to database
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            no_standards_file_window.NoStandardsWindow(self)
+
+    def change_file_path(self, new_file_path):
+        &#34;&#34;&#34;Changes the file path.
+
+        Makes change to the file path, which is an attribute of this instance of App class.
+        This will change the attribute used by the view report window.
+
+        Args:
+          self: Instance of main window
+          new_file_path: The new file name (or path) of the wav file to be tested. A string object
+
+        Raises:
+          Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        self.file_path = new_file_path
+
+    def get_file_path(self):
+        &#34;&#34;&#34; Gives the current file name being stored by the app
+
+        Returns the filename attribute being stored.
+
+        Args:
+            self: Instance of main window
+
+        Returns:
+            file_path: the file path of the audio file selected by the user
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        return self.file_path
+
+    def add_to_platforms(self, name, value):
+        &#34;&#34;&#34; Add a new platform to both the platform dictionary and standards.db file
+
+        Will add the new standard along with luf values and peak values to the standard dictionary
+        and the standards.db database
+
+         Args:
+            self: Instance of main window
+            name: The name of the platform to add
+            value: The LUFS and Peak value. A tuple in the form of (luf,peak).
+
+        Raises:
+            Any errors raised should be put here
+        &#34;&#34;&#34;
+        if value[0] != &#34;&#34;:
+            lufs = value[0]
+            lufs_value = float(lufs)
+        else:
+            lufs_value = &#34;&#34;
+        if value[1] != &#34;&#34;:
+            peak = value[1]
+            peak_value = float(peak)
+        else:
+            peak_value = &#34;&#34;
+
+        # before we add this new platform to the platform dictionary, sort it
+        not_sorted_platforms = self.platforms
+        not_sorted_platforms[name] = (lufs_value, peak_value)
+        sorted_names = sorted(not_sorted_platforms)
+        self.platforms = {key: not_sorted_platforms[key] for key in sorted_names}
+        try:
+            # now update database
+            connection = sqlite3.connect(&#39;standards.db&#39;)
+            cursor = connection.cursor()
+
+            insert_query = &#34;&#34;&#34;INSERT INTO Standards
+                            (Standard_Name, LUF_Value, Peak_Value)
+                            VALUES
+                            (?,?,?)&#34;&#34;&#34;
+
+            cursor.execute(insert_query, (name, lufs_value, peak_value))
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            no_standards_file_window.NoStandardsWindow(self)
+
+    def is_valid_input(self, input):
+        &#34;&#34;&#34; Gives the standard names stored within the standard dictionary.
+
+        Returns the standard names currently being stored as list.
+
+        Args:
+            self: Instance of main window
+            curr_input: the LUFS or peak input a user is trying to include as a platform standard
+
+        Returns:
+            is_valid: a boolean value for whether the input is valid or not
+            error_msg: the error message to report if the input is not valid
+
+        Raises:
+            Any errors raised should be put here
+        &#34;&#34;&#34;
+        error_msg = &#34;&#34;
+        is_valid = True
+        if input[0] == &#39;-&#39;:
+            if not input[1:].isnumeric():
+                split_value = input[1:].split(&#34;.&#34;)
+                if len(split_value) != 2:
+                    error_msg = &#34;Enter a numeric value&#34;
+                    is_valid = False
+                elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
+                    if split_value[0] != &#34;&#34;:
+                        error_msg = &#34;Enter a numeric value&#34;
+                        is_valid = False
+        else:
+            error_msg = &#34;Must enter a negative value&#34;
+            is_valid = False
+        return is_valid, error_msg
+
+
+    def get_platform_names(self):
+        &#34;&#34;&#34; Gives the standard names stored within the standard dictionary.
+
+        Returns the standard names currently being stored as list.
+
+        Args:
+            self: Instance of main window
+
+        Returns:
+            name_list: A list of all the names currently being stored.
+
+        Raises:
+            Any errors raised should be put here
+        &#34;&#34;&#34;
+        name_list = []
+        for key in self.platforms:
+            name_list.append(key)
+        return name_list
+
+    def get_platform_names_lower(self):
+        &#34;&#34;&#34; Gives the standard names stored within the standard dictionary in lower case
+
+        Returns the standard names in lower case in a list. To be used to check whether a name is
+        being stored, not to display the names.
+
+        Args:
+            self: Instance of main window
+
+        Returns:
+            name_list: A list of all the names currently being stored.
+
+        Raises:
+            Any errors raised should be put here
+        &#34;&#34;&#34;
+        name_list = []
+        for key in self.platforms:
+            name_list.append(key.lower().split())
+        return name_list
+
+    def get_platform_standard(self, name):
+        &#34;&#34;&#34; Gives the standard values for a platform passed
+
+        Returns the LUFS and Peak values for the platform
+
+        Args:
+            self: Instance of main window
+            name: the name of the platform we will return lufs and peak values for
+
+        Returns:
+            A tuple in the form of (max integrated LUFS, max true peak dB)
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        return self.platforms.get(name)
+
+    def set_platform_standard(self, name, value_type, new_value):
+        &#34;&#34;&#34; Set (change) an existing platform standard
+
+        Will change the platforms dictionary and the standards.db database based on changes passed
+        by user
+
+        Args:
+            self: Instance of main window
+            name: The name of the platform
+            value_type: Whether the user wishes to change the LUFS or peak value
+            new_value: The new value to change to. A string.
+
+        Raises:
+            Any errors raised should be put here
+        &#34;&#34;&#34;
+        if new_value != &#34;&#34;:
+            new_value_float = float(new_value)
+        else:
+            new_value_float = &#34;&#34;
+        if value_type == &#34;Integrated Loudness (LUFS)&#34;:
+            curr_value = list(self.get_platform_standard(name))
+            curr_value[0] = new_value_float
+            self.platforms[name] = tuple(curr_value)
+            # now update database
+            try:
+                connection = sqlite3.connect(&#39;standards.db&#39;)
+                cursor = connection.cursor()
+                update_query = &#34;&#34;&#34;UPDATE Standards
+                                SET LUF_Value = ?
+                                WHERE Standard_Name = ?&#34;&#34;&#34;
+                cursor.execute(update_query, (new_value_float, name))
+                connection.commit()
+                connection.close()
+            except sqlite3.OperationalError:
+                # create an error window which will destroy the main window
+                no_standards_file_window.NoStandardsWindow(self)
+        else:
+            curr_value = list(self.get_platform_standard(name))
+            curr_value[1] = new_value_float
+            self.platforms[name] = tuple(curr_value)
+            # now update database
+            try:
+                connection = sqlite3.connect(&#39;standards.db&#39;)
+                cursor = connection.cursor()
+                update_query = &#34;&#34;&#34;UPDATE Standards
+                                SET Peak_Value = ?
+                                WHERE Standard_Name = ?&#34;&#34;&#34;
+                cursor.execute(update_query, (new_value_float, name))
+                connection.commit()
+                connection.close()
+            except sqlite3.OperationalError:
+                # create an error window which will destroy the main window
+                no_standards_file_window.NoStandardsWindow(self)
+
+    def remove_platform(self, name):
+        &#34;&#34;&#34; Removes the platform name passed
+
+        Removes the platform from the platform dictionary as well as the standards.db database
+
+        Args:
+            self: Instance of main window
+            name: the name of the platform we will remove
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        self.platforms.pop(name)
+        try:
+            connection = sqlite3.connect(&#39;standards.db&#39;)
+            cursor = connection.cursor()
+            delete_query = &#34;&#34;&#34;DELETE FROM Standards
+                                WHERE Standard_Name = ?&#34;&#34;&#34;
+            cursor.execute(delete_query, (name,))
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            no_standards_file_window.NoStandardsWindow(self)
+
+    def get_max_platform_name_length(self):
+        &#34;&#34;&#34;Returns the length of the longest platform name
+
+        Uses the get_platform_names method to get a list of all platform names and then find the
+        maximum length of these. Will be used to configure window sizes that use platform names.
+
+        Args:
+            self: Instance of main window
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        name_list = self.get_platform_names()
+        max_length = 0
+        for name in name_list:
+            if len(name) &gt; max_length:
+                max_length = len(name)
+        return max_length
+
+    def store_changes(self, value):
+        &#34;&#34;&#34;Stores whether a user should make changes after a warning window.
+
+        Will be used by the warning window if a user selects yes after a warning. Will also be used
+        by the window that prompted the warning after the changed has been made to reset the value.
+
+        Args:
+            self: Instance of main window
+            value: A boolean value
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        if value:
+            self.make_changes = True
+        else:
+            self.make_changes = False
+
+    def get_change(self):
+        &#34;&#34;&#34;Returns whether a user should make changes after a warning window.
+
+        Will also be used by the window that prompted a warning to see if the user wishes to do the
+        action that caused a warning.
+
+        Args:
+            self: Instance of main window
+
+        Returns:
+            A boolean value for whether a user should make a change or not.
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        return self.make_changes
+
+    def select_audio_file(self):
+        &#34;&#34;&#34; Prompts user for an audio file path.
+
+        Uses askopenfilename to select can audio file to be tested.
+
+        Args:
+          self: Instance of main window
+
+        Raises:
+          Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        # file types to accept
+        filetypes = (
+            (&#34;WAV file&#34;, &#34;*.wav&#34;),
+            (&#34;FLAC file&#34;, &#34;*.flac&#34;),
+            (&#34;MP4 file&#34;, &#34;*.mp4&#34;)
+        )
+        filename = fd.askopenfilename(
+            title=&#34;Select a file&#34;,
+            initialdir=&#39;/&#39;,
+            filetypes=filetypes
+        )
+
+        self.change_file_path(filename)
+
+        if self.get_file_path() != &#34;&#34;:
+            report_results_window.Report(self, self.get_file_path())
+
+    def open_wav_file(self):
+        &#34;&#34;&#34;Opens the wav file and fetches its needed information.
+
+        Opens the selected wav file and fetches its sample rate, data itself, length of data, and
+        number of channels.
+
+        Args:
+            self: An App Object.
+
+        Returns:
+            A tuple containing the selected wav file&#39;s sample rate, data, length of data, and number
+             of channels.
+
+        Raises:
+            Add possible errors here.
+
+        &#34;&#34;&#34;
+        file_type = self.get_file_path().split(&#39;.&#39;) #split file path on &#39;.&#39;
+        file_type = file_type[-1] #take the last entry in the list from split as the file extension
+
+        # if the file is an MP4 file then open using moviepy and extract the audio
+        if file_type.upper() == &#39;MP4&#39;:
+            clip = mp.VideoFileClip(self.get_file_path())
+            audio_file = clip.audio
+            data = audio_file.to_soundarray(None,44100)
+            rate = 44100
+        # else open as an audio (wav/flac) file
+        else:
+            data, rate = sf.read(self.get_file_path())
+
+        length_file = len(data)
+
+        if len(data.shape) &gt; 1:
+            n_channels = data.shape[1]
+        else:
+            n_channels = 1
+
+        wav_info = (data, rate, length_file, n_channels)
+        return wav_info
+
+    def get_luf(self, wav_info):
+        &#34;&#34;&#34;Returns the integrated loudness in LUFS of an audio file.
+
+        Uses pyloudnorm to find the LUFS of an audio file found at a file path passed.
+
+        Args:
+            self: Instance of main window
+            wav_info: a tuple of the selected wav file&#39;s sample rate, data, length of data, number
+                of channels
+
+        Returns:
+            The integrated loudness of the audio file in LUFS
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+
+        meter = pyln.Meter(wav_info[1])  # create meter; wav_info[1] is the rate
+        lufs = meter.integrated_loudness(wav_info[0])  # get lufs value; wav_info[0] is the data
+        return lufs
+
+    def get_peak(self, wav_info):
+        &#34;&#34;&#34;Returns the true peak in dBFS of an audio file.
+
+        Uses some method to find the peak of an audio file found at a file path passed.
+
+        Args:
+            self: Instance of main window
+            wav_info: a tuple of the selected wav file&#39;s sample rate, data, length of data, number
+                of channels
+
+        Returns:
+            The true peak of the audio file in dB
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        resampling_factor = 4  # use a resampling factor of 4
+
+        # calculate number of samples in resampled file
+        samples = wav_info[2] * resampling_factor  # wav_info[2] is the length of the data
+
+        # resample using FFT
+        new_audio = scipy.signal.resample(wav_info[0], samples)
+        current_peak1 = np.max(np.abs(new_audio))  # find peak value
+        current_peak1 = math.log(current_peak1, 10) * 20  # convert to decibels
+
+        # resample using resampy
+        new_audio = resampy.resample(wav_info[0].transpose(), wav_info[2], samples, axis=-1)
+        current_peak2 = np.max(np.abs(new_audio))  # find peak value
+        current_peak2 = math.log(current_peak2, 10) * 20  # convert to decibels
+
+        # resample using polyphase filtering
+        new_audio = scipy.signal.resample_poly(wav_info[0], resampling_factor, 1)
+        current_peak3 = np.max(np.abs(new_audio))  # find peak value
+        current_peak3 = math.log(current_peak3, 10) * 20  # convert to decibels
+
+        # get and return median of the three techniques
+        peak = statistics.median([current_peak1, current_peak2, current_peak3])
+        return peak
+
+if __name__ == &#34;__main__&#34;:
+    app = App()
+    app.mainloop()
+    </code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="main.App"><code class="flex name class">
+<span>class <span class="ident">App</span></span>
+<span>(</span><span>master=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A SoundOff window.</p>
+<p>Will hold a primary window with functions to select a wav file, test the wav file's peak value
+against a standard's peak value, and test the wav file's LUF value against a standard's LUF
+value.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>file_path</code></strong></dt>
+<dd>The current audio file path to be tested. Can change frequently. String object.</dd>
+<dt><strong><code>platforms</code></strong></dt>
+<dd>a dictionary of current platforms with lufs and peak values</dd>
+<dt><strong><code>make_changes</code></strong></dt>
+<dd>a boolean value used by the warning window to hold whether the user wishes to</dd>
+</dl>
+<p>make a change
+Initializes the main window application</p>
+<p>Will hold buttons for the main functions and store platform information by accessing the
+standards.db file</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>The main window</dd>
+<dt><strong><code>master</code></strong></dt>
+<dd>no master, this is the first instance of a window</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class App(tk.Tk):
+    &#34;&#34;&#34;A SoundOff window.
+
+    Will hold a primary window with functions to select a wav file, test the wav file&#39;s peak value
+    against a standard&#39;s peak value, and test the wav file&#39;s LUF value against a standard&#39;s LUF
+    value.
+
+    Attributes:
+        file_path: The current audio file path to be tested. Can change frequently. String object.
+        platforms: a dictionary of current platforms with lufs and peak values
+        make_changes: a boolean value used by the warning window to hold whether the user wishes to
+        make a change
+      &#34;&#34;&#34;
+
+    def __init__(self, master=None):
+        &#34;&#34;&#34;Initializes the main window application
+
+        Will hold buttons for the main functions and store platform information by accessing the
+        standards.db file
+
+        Args:
+          self: The main window
+          master: no master, this is the first instance of a window
+
+        Raises:
+          Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        super().__init__(master)
+        # create basic window properties
+        self.title(&#34;SoundOff&#34;)
+        width = self.winfo_screenwidth()
+        height = self.winfo_screenheight()
+        size = str(width-100) + &#34;x&#34; + str(height-200)
+        self.geometry(size)
+        self.configure(bg=&#34;#2d2933&#34;)
+
+        # initialize path of the file being passed in
+        self.file_path = &#34;&#34;
+
+        # a dictionary to store platform standards, initialized to query from standards database
+        self.platforms = {}
+
+        # True/False value to store whether to make changes after warning message
+        self.make_changes = False
+
+        # define our labels and widgets to be placed on the screen
+        self.open_audio_file = ttk.Button(
+            self,
+            text=&#34;Select a file&#34;,
+            command=self.select_audio_file,
+            style=&#34;File.TButton&#34;
+        )
+        self.welcome_label = ttk.Label(
+            self,
+            text=&#34;Welcome to SoundOff!&#34;,
+            style=&#34;Greeting.TLabel&#34;
+        )
+        self.blank_label = ttk.Label(
+            self,
+            text=&#34;&#34;,
+            width=16,
+            style=&#34;Blank.TLabel&#34;
+        )
+        self.blank_label2 = ttk.Label(
+            self,
+            text=&#34;&#34;,
+            width=16,
+            style=&#34;Blank.TLabel&#34;
+        )
+        # create buttons dealing with platforms
+        self.add_button = ttk.Button(
+            self,
+            text=&#34;Add a new platform&#34;,
+            command=lambda: add_new_window.AddNew(self),
+            style=&#34;Add.TButton&#34;
+        )
+        self.modify_button = ttk.Button(
+            self,
+            text=&#34;Modify/Delete existing platform standards&#34;,
+            command=lambda: modify_standards_window.Modify(self),
+            style=&#34;Add.TButton&#34;
+        )
+        self.view_button = ttk.Button(
+            self,
+            text=&#34;View existing platform standards&#34;,
+            command=lambda: view_standards_window.ViewPlatforms(self),
+            style=&#34;Add.TButton&#34;
+        )
+
+        # define the look of our labels and widgets
+        style = ttk.Style()
+        style.configure(
+            &#34;Greeting.TLabel&#34;,
+            foreground=&#34;white&#34;,
+            background=&#34;#2d2933&#34;,
+            font=(&#39;Helvetica&#39;, 35)
+        )
+        style.configure(
+            &#34;File.TButton&#34;,
+            foreground=&#34;#2d2933&#34;,
+            background=&#34;white&#34;,
+            border=0,
+            font=(&#39;Helvetica&#39;, 18)
+        )
+        style.configure(
+            &#34;Add.TButton&#34;,
+            foreground=&#34;#2d2933&#34;,
+            background=&#34;white&#34;,
+            border=0,
+            font=(&#39;Helvetica&#39;, 10)
+        )
+        style.configure(
+            &#34;Blank.TLabel&#34;,
+            foreground=&#34;#2d2933&#34;,
+            background=&#34;#2d2933&#34;,
+            font=(&#39;Helvetica&#39;, 8)
+        )
+
+        # place our widgets on the screen
+        self.open_audio_file.grid(column=1, row=2, ipadx=30, ipady=18, pady=20, sticky=&#34;nsew&#34;)
+        self.welcome_label.grid(column=1, row=0, pady=60, sticky=&#34;nsew&#34;)
+        self.blank_label2.grid(column=1, row=3, pady=height/4.9)
+        self.add_button.grid(column=0, row=10, pady=20, padx=width/9)
+        self.modify_button.grid(column=1, row=10, pady=20)
+        self.view_button.grid(column=2, row=10, pady=20, padx=width/10)
+
+        # connect to standards database
+        # make sure it&#39;s in the same folder as main file
+        try:
+            connection = sqlite3.connect(&#39;standards.db&#39;)
+            cursor = connection.cursor()
+
+            # define empty dictionary to store platform names and LUFS and peak max values
+            not_sorted_platforms = {}
+            platform_info = cursor.execute(&#39;&#39;&#39;SELECT * FROM Standards&#39;&#39;&#39;)
+            for platform_name in platform_info:
+                # key for dictionary = platform name
+                # value for dictionary = (lufs,peak)
+                not_sorted_platforms[platform_name[0]] = (platform_name[1], platform_name[2])
+            # sort by platform names
+            sorted_names = sorted(not_sorted_platforms)
+            self.platforms = {key: not_sorted_platforms[key] for key in sorted_names}
+            # close connection to database
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            no_standards_file_window.NoStandardsWindow(self)
+
+    def change_file_path(self, new_file_path):
+        &#34;&#34;&#34;Changes the file path.
+
+        Makes change to the file path, which is an attribute of this instance of App class.
+        This will change the attribute used by the view report window.
+
+        Args:
+          self: Instance of main window
+          new_file_path: The new file name (or path) of the wav file to be tested. A string object
+
+        Raises:
+          Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        self.file_path = new_file_path
+
+    def get_file_path(self):
+        &#34;&#34;&#34; Gives the current file name being stored by the app
+
+        Returns the filename attribute being stored.
+
+        Args:
+            self: Instance of main window
+
+        Returns:
+            file_path: the file path of the audio file selected by the user
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        return self.file_path
+
+    def add_to_platforms(self, name, value):
+        &#34;&#34;&#34; Add a new platform to both the platform dictionary and standards.db file
+
+        Will add the new standard along with luf values and peak values to the standard dictionary
+        and the standards.db database
+
+         Args:
+            self: Instance of main window
+            name: The name of the platform to add
+            value: The LUFS and Peak value. A tuple in the form of (luf,peak).
+
+        Raises:
+            Any errors raised should be put here
+        &#34;&#34;&#34;
+        if value[0] != &#34;&#34;:
+            lufs = value[0]
+            lufs_value = float(lufs)
+        else:
+            lufs_value = &#34;&#34;
+        if value[1] != &#34;&#34;:
+            peak = value[1]
+            peak_value = float(peak)
+        else:
+            peak_value = &#34;&#34;
+
+        # before we add this new platform to the platform dictionary, sort it
+        not_sorted_platforms = self.platforms
+        not_sorted_platforms[name] = (lufs_value, peak_value)
+        sorted_names = sorted(not_sorted_platforms)
+        self.platforms = {key: not_sorted_platforms[key] for key in sorted_names}
+        try:
+            # now update database
+            connection = sqlite3.connect(&#39;standards.db&#39;)
+            cursor = connection.cursor()
+
+            insert_query = &#34;&#34;&#34;INSERT INTO Standards
+                            (Standard_Name, LUF_Value, Peak_Value)
+                            VALUES
+                            (?,?,?)&#34;&#34;&#34;
+
+            cursor.execute(insert_query, (name, lufs_value, peak_value))
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            no_standards_file_window.NoStandardsWindow(self)
+
+    def is_valid_input(self, input):
+        &#34;&#34;&#34; Gives the standard names stored within the standard dictionary.
+
+        Returns the standard names currently being stored as list.
+
+        Args:
+            self: Instance of main window
+            curr_input: the LUFS or peak input a user is trying to include as a platform standard
+
+        Returns:
+            is_valid: a boolean value for whether the input is valid or not
+            error_msg: the error message to report if the input is not valid
+
+        Raises:
+            Any errors raised should be put here
+        &#34;&#34;&#34;
+        error_msg = &#34;&#34;
+        is_valid = True
+        if input[0] == &#39;-&#39;:
+            if not input[1:].isnumeric():
+                split_value = input[1:].split(&#34;.&#34;)
+                if len(split_value) != 2:
+                    error_msg = &#34;Enter a numeric value&#34;
+                    is_valid = False
+                elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
+                    if split_value[0] != &#34;&#34;:
+                        error_msg = &#34;Enter a numeric value&#34;
+                        is_valid = False
+        else:
+            error_msg = &#34;Must enter a negative value&#34;
+            is_valid = False
+        return is_valid, error_msg
+
+
+    def get_platform_names(self):
+        &#34;&#34;&#34; Gives the standard names stored within the standard dictionary.
+
+        Returns the standard names currently being stored as list.
+
+        Args:
+            self: Instance of main window
+
+        Returns:
+            name_list: A list of all the names currently being stored.
+
+        Raises:
+            Any errors raised should be put here
+        &#34;&#34;&#34;
+        name_list = []
+        for key in self.platforms:
+            name_list.append(key)
+        return name_list
+
+    def get_platform_names_lower(self):
+        &#34;&#34;&#34; Gives the standard names stored within the standard dictionary in lower case
+
+        Returns the standard names in lower case in a list. To be used to check whether a name is
+        being stored, not to display the names.
+
+        Args:
+            self: Instance of main window
+
+        Returns:
+            name_list: A list of all the names currently being stored.
+
+        Raises:
+            Any errors raised should be put here
+        &#34;&#34;&#34;
+        name_list = []
+        for key in self.platforms:
+            name_list.append(key.lower().split())
+        return name_list
+
+    def get_platform_standard(self, name):
+        &#34;&#34;&#34; Gives the standard values for a platform passed
+
+        Returns the LUFS and Peak values for the platform
+
+        Args:
+            self: Instance of main window
+            name: the name of the platform we will return lufs and peak values for
+
+        Returns:
+            A tuple in the form of (max integrated LUFS, max true peak dB)
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        return self.platforms.get(name)
+
+    def set_platform_standard(self, name, value_type, new_value):
+        &#34;&#34;&#34; Set (change) an existing platform standard
+
+        Will change the platforms dictionary and the standards.db database based on changes passed
+        by user
+
+        Args:
+            self: Instance of main window
+            name: The name of the platform
+            value_type: Whether the user wishes to change the LUFS or peak value
+            new_value: The new value to change to. A string.
+
+        Raises:
+            Any errors raised should be put here
+        &#34;&#34;&#34;
+        if new_value != &#34;&#34;:
+            new_value_float = float(new_value)
+        else:
+            new_value_float = &#34;&#34;
+        if value_type == &#34;Integrated Loudness (LUFS)&#34;:
+            curr_value = list(self.get_platform_standard(name))
+            curr_value[0] = new_value_float
+            self.platforms[name] = tuple(curr_value)
+            # now update database
+            try:
+                connection = sqlite3.connect(&#39;standards.db&#39;)
+                cursor = connection.cursor()
+                update_query = &#34;&#34;&#34;UPDATE Standards
+                                SET LUF_Value = ?
+                                WHERE Standard_Name = ?&#34;&#34;&#34;
+                cursor.execute(update_query, (new_value_float, name))
+                connection.commit()
+                connection.close()
+            except sqlite3.OperationalError:
+                # create an error window which will destroy the main window
+                no_standards_file_window.NoStandardsWindow(self)
+        else:
+            curr_value = list(self.get_platform_standard(name))
+            curr_value[1] = new_value_float
+            self.platforms[name] = tuple(curr_value)
+            # now update database
+            try:
+                connection = sqlite3.connect(&#39;standards.db&#39;)
+                cursor = connection.cursor()
+                update_query = &#34;&#34;&#34;UPDATE Standards
+                                SET Peak_Value = ?
+                                WHERE Standard_Name = ?&#34;&#34;&#34;
+                cursor.execute(update_query, (new_value_float, name))
+                connection.commit()
+                connection.close()
+            except sqlite3.OperationalError:
+                # create an error window which will destroy the main window
+                no_standards_file_window.NoStandardsWindow(self)
+
+    def remove_platform(self, name):
+        &#34;&#34;&#34; Removes the platform name passed
+
+        Removes the platform from the platform dictionary as well as the standards.db database
+
+        Args:
+            self: Instance of main window
+            name: the name of the platform we will remove
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        self.platforms.pop(name)
+        try:
+            connection = sqlite3.connect(&#39;standards.db&#39;)
+            cursor = connection.cursor()
+            delete_query = &#34;&#34;&#34;DELETE FROM Standards
+                                WHERE Standard_Name = ?&#34;&#34;&#34;
+            cursor.execute(delete_query, (name,))
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            no_standards_file_window.NoStandardsWindow(self)
+
+    def get_max_platform_name_length(self):
+        &#34;&#34;&#34;Returns the length of the longest platform name
+
+        Uses the get_platform_names method to get a list of all platform names and then find the
+        maximum length of these. Will be used to configure window sizes that use platform names.
+
+        Args:
+            self: Instance of main window
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        name_list = self.get_platform_names()
+        max_length = 0
+        for name in name_list:
+            if len(name) &gt; max_length:
+                max_length = len(name)
+        return max_length
+
+    def store_changes(self, value):
+        &#34;&#34;&#34;Stores whether a user should make changes after a warning window.
+
+        Will be used by the warning window if a user selects yes after a warning. Will also be used
+        by the window that prompted the warning after the changed has been made to reset the value.
+
+        Args:
+            self: Instance of main window
+            value: A boolean value
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        if value:
+            self.make_changes = True
+        else:
+            self.make_changes = False
+
+    def get_change(self):
+        &#34;&#34;&#34;Returns whether a user should make changes after a warning window.
+
+        Will also be used by the window that prompted a warning to see if the user wishes to do the
+        action that caused a warning.
+
+        Args:
+            self: Instance of main window
+
+        Returns:
+            A boolean value for whether a user should make a change or not.
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        return self.make_changes
+
+    def select_audio_file(self):
+        &#34;&#34;&#34; Prompts user for an audio file path.
+
+        Uses askopenfilename to select can audio file to be tested.
+
+        Args:
+          self: Instance of main window
+
+        Raises:
+          Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        # file types to accept
+        filetypes = (
+            (&#34;WAV file&#34;, &#34;*.wav&#34;),
+            (&#34;FLAC file&#34;, &#34;*.flac&#34;),
+            (&#34;MP4 file&#34;, &#34;*.mp4&#34;)
+        )
+        filename = fd.askopenfilename(
+            title=&#34;Select a file&#34;,
+            initialdir=&#39;/&#39;,
+            filetypes=filetypes
+        )
+
+        self.change_file_path(filename)
+
+        if self.get_file_path() != &#34;&#34;:
+            report_results_window.Report(self, self.get_file_path())
+
+    def open_wav_file(self):
+        &#34;&#34;&#34;Opens the wav file and fetches its needed information.
+
+        Opens the selected wav file and fetches its sample rate, data itself, length of data, and
+        number of channels.
+
+        Args:
+            self: An App Object.
+
+        Returns:
+            A tuple containing the selected wav file&#39;s sample rate, data, length of data, and number
+             of channels.
+
+        Raises:
+            Add possible errors here.
+
+        &#34;&#34;&#34;
+        file_type = self.get_file_path().split(&#39;.&#39;) #split file path on &#39;.&#39;
+        file_type = file_type[-1] #take the last entry in the list from split as the file extension
+
+        # if the file is an MP4 file then open using moviepy and extract the audio
+        if file_type.upper() == &#39;MP4&#39;:
+            clip = mp.VideoFileClip(self.get_file_path())
+            audio_file = clip.audio
+            data = audio_file.to_soundarray(None,44100)
+            rate = 44100
+        # else open as an audio (wav/flac) file
+        else:
+            data, rate = sf.read(self.get_file_path())
+
+        length_file = len(data)
+
+        if len(data.shape) &gt; 1:
+            n_channels = data.shape[1]
+        else:
+            n_channels = 1
+
+        wav_info = (data, rate, length_file, n_channels)
+        return wav_info
+
+    def get_luf(self, wav_info):
+        &#34;&#34;&#34;Returns the integrated loudness in LUFS of an audio file.
+
+        Uses pyloudnorm to find the LUFS of an audio file found at a file path passed.
+
+        Args:
+            self: Instance of main window
+            wav_info: a tuple of the selected wav file&#39;s sample rate, data, length of data, number
+                of channels
+
+        Returns:
+            The integrated loudness of the audio file in LUFS
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+
+        meter = pyln.Meter(wav_info[1])  # create meter; wav_info[1] is the rate
+        lufs = meter.integrated_loudness(wav_info[0])  # get lufs value; wav_info[0] is the data
+        return lufs
+
+    def get_peak(self, wav_info):
+        &#34;&#34;&#34;Returns the true peak in dBFS of an audio file.
+
+        Uses some method to find the peak of an audio file found at a file path passed.
+
+        Args:
+            self: Instance of main window
+            wav_info: a tuple of the selected wav file&#39;s sample rate, data, length of data, number
+                of channels
+
+        Returns:
+            The true peak of the audio file in dB
+
+        Raises:
+            Any errors raised should be put here
+
+        &#34;&#34;&#34;
+        resampling_factor = 4  # use a resampling factor of 4
+
+        # calculate number of samples in resampled file
+        samples = wav_info[2] * resampling_factor  # wav_info[2] is the length of the data
+
+        # resample using FFT
+        new_audio = scipy.signal.resample(wav_info[0], samples)
+        current_peak1 = np.max(np.abs(new_audio))  # find peak value
+        current_peak1 = math.log(current_peak1, 10) * 20  # convert to decibels
+
+        # resample using resampy
+        new_audio = resampy.resample(wav_info[0].transpose(), wav_info[2], samples, axis=-1)
+        current_peak2 = np.max(np.abs(new_audio))  # find peak value
+        current_peak2 = math.log(current_peak2, 10) * 20  # convert to decibels
+
+        # resample using polyphase filtering
+        new_audio = scipy.signal.resample_poly(wav_info[0], resampling_factor, 1)
+        current_peak3 = np.max(np.abs(new_audio))  # find peak value
+        current_peak3 = math.log(current_peak3, 10) * 20  # convert to decibels
+
+        # get and return median of the three techniques
+        peak = statistics.median([current_peak1, current_peak2, current_peak3])
+        return peak</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tkinter.Tk</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Wm</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="main.App.add_to_platforms"><code class="name flex">
+<span>def <span class="ident">add_to_platforms</span></span>(<span>self, name, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a new platform to both the platform dictionary and standards.db file</p>
+<p>Will add the new standard along with luf values and peak values to the standard dictionary
+and the standards.db database</p>
+<p>Args:
+self: Instance of main window
+name: The name of the platform to add
+value: The LUFS and Peak value. A tuple in the form of (luf,peak).</p>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_to_platforms(self, name, value):
+    &#34;&#34;&#34; Add a new platform to both the platform dictionary and standards.db file
+
+    Will add the new standard along with luf values and peak values to the standard dictionary
+    and the standards.db database
+
+     Args:
+        self: Instance of main window
+        name: The name of the platform to add
+        value: The LUFS and Peak value. A tuple in the form of (luf,peak).
+
+    Raises:
+        Any errors raised should be put here
+    &#34;&#34;&#34;
+    if value[0] != &#34;&#34;:
+        lufs = value[0]
+        lufs_value = float(lufs)
+    else:
+        lufs_value = &#34;&#34;
+    if value[1] != &#34;&#34;:
+        peak = value[1]
+        peak_value = float(peak)
+    else:
+        peak_value = &#34;&#34;
+
+    # before we add this new platform to the platform dictionary, sort it
+    not_sorted_platforms = self.platforms
+    not_sorted_platforms[name] = (lufs_value, peak_value)
+    sorted_names = sorted(not_sorted_platforms)
+    self.platforms = {key: not_sorted_platforms[key] for key in sorted_names}
+    try:
+        # now update database
+        connection = sqlite3.connect(&#39;standards.db&#39;)
+        cursor = connection.cursor()
+
+        insert_query = &#34;&#34;&#34;INSERT INTO Standards
+                        (Standard_Name, LUF_Value, Peak_Value)
+                        VALUES
+                        (?,?,?)&#34;&#34;&#34;
+
+        cursor.execute(insert_query, (name, lufs_value, peak_value))
+        connection.commit()
+        connection.close()
+    except sqlite3.OperationalError:
+        # create an error window which will destroy the main window
+        no_standards_file_window.NoStandardsWindow(self)</code></pre>
+</details>
+</dd>
+<dt id="main.App.change_file_path"><code class="name flex">
+<span>def <span class="ident">change_file_path</span></span>(<span>self, new_file_path)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Changes the file path.</p>
+<p>Makes change to the file path, which is an attribute of this instance of App class.
+This will change the attribute used by the view report window.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+<dt><strong><code>new_file_path</code></strong></dt>
+<dd>The new file name (or path) of the wav file to be tested. A string object</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def change_file_path(self, new_file_path):
+    &#34;&#34;&#34;Changes the file path.
+
+    Makes change to the file path, which is an attribute of this instance of App class.
+    This will change the attribute used by the view report window.
+
+    Args:
+      self: Instance of main window
+      new_file_path: The new file name (or path) of the wav file to be tested. A string object
+
+    Raises:
+      Any errors raised should be put here
+
+    &#34;&#34;&#34;
+    self.file_path = new_file_path</code></pre>
+</details>
+</dd>
+<dt id="main.App.get_change"><code class="name flex">
+<span>def <span class="ident">get_change</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns whether a user should make changes after a warning window.</p>
+<p>Will also be used by the window that prompted a warning to see if the user wishes to do the
+action that caused a warning.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A boolean value for whether a user should make a change or not.</p>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_change(self):
+    &#34;&#34;&#34;Returns whether a user should make changes after a warning window.
+
+    Will also be used by the window that prompted a warning to see if the user wishes to do the
+    action that caused a warning.
+
+    Args:
+        self: Instance of main window
+
+    Returns:
+        A boolean value for whether a user should make a change or not.
+
+    Raises:
+        Any errors raised should be put here
+
+    &#34;&#34;&#34;
+    return self.make_changes</code></pre>
+</details>
+</dd>
+<dt id="main.App.get_file_path"><code class="name flex">
+<span>def <span class="ident">get_file_path</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gives the current file name being stored by the app</p>
+<p>Returns the filename attribute being stored.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>file_path</code></dt>
+<dd>the file path of the audio file selected by the user</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_file_path(self):
+    &#34;&#34;&#34; Gives the current file name being stored by the app
+
+    Returns the filename attribute being stored.
+
+    Args:
+        self: Instance of main window
+
+    Returns:
+        file_path: the file path of the audio file selected by the user
+
+    Raises:
+        Any errors raised should be put here
+
+    &#34;&#34;&#34;
+    return self.file_path</code></pre>
+</details>
+</dd>
+<dt id="main.App.get_luf"><code class="name flex">
+<span>def <span class="ident">get_luf</span></span>(<span>self, wav_info)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the integrated loudness in LUFS of an audio file.</p>
+<p>Uses pyloudnorm to find the LUFS of an audio file found at a file path passed.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+<dt><strong><code>wav_info</code></strong></dt>
+<dd>a tuple of the selected wav file's sample rate, data, length of data, number
+of channels</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The integrated loudness of the audio file in LUFS</p>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_luf(self, wav_info):
+    &#34;&#34;&#34;Returns the integrated loudness in LUFS of an audio file.
+
+    Uses pyloudnorm to find the LUFS of an audio file found at a file path passed.
+
+    Args:
+        self: Instance of main window
+        wav_info: a tuple of the selected wav file&#39;s sample rate, data, length of data, number
+            of channels
+
+    Returns:
+        The integrated loudness of the audio file in LUFS
+
+    Raises:
+        Any errors raised should be put here
+
+    &#34;&#34;&#34;
+
+    meter = pyln.Meter(wav_info[1])  # create meter; wav_info[1] is the rate
+    lufs = meter.integrated_loudness(wav_info[0])  # get lufs value; wav_info[0] is the data
+    return lufs</code></pre>
+</details>
+</dd>
+<dt id="main.App.get_max_platform_name_length"><code class="name flex">
+<span>def <span class="ident">get_max_platform_name_length</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the length of the longest platform name</p>
+<p>Uses the get_platform_names method to get a list of all platform names and then find the
+maximum length of these. Will be used to configure window sizes that use platform names.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_max_platform_name_length(self):
+    &#34;&#34;&#34;Returns the length of the longest platform name
+
+    Uses the get_platform_names method to get a list of all platform names and then find the
+    maximum length of these. Will be used to configure window sizes that use platform names.
+
+    Args:
+        self: Instance of main window
+
+    Raises:
+        Any errors raised should be put here
+
+    &#34;&#34;&#34;
+    name_list = self.get_platform_names()
+    max_length = 0
+    for name in name_list:
+        if len(name) &gt; max_length:
+            max_length = len(name)
+    return max_length</code></pre>
+</details>
+</dd>
+<dt id="main.App.get_peak"><code class="name flex">
+<span>def <span class="ident">get_peak</span></span>(<span>self, wav_info)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the true peak in dBFS of an audio file.</p>
+<p>Uses some method to find the peak of an audio file found at a file path passed.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+<dt><strong><code>wav_info</code></strong></dt>
+<dd>a tuple of the selected wav file's sample rate, data, length of data, number
+of channels</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The true peak of the audio file in dB</p>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_peak(self, wav_info):
+    &#34;&#34;&#34;Returns the true peak in dBFS of an audio file.
+
+    Uses some method to find the peak of an audio file found at a file path passed.
+
+    Args:
+        self: Instance of main window
+        wav_info: a tuple of the selected wav file&#39;s sample rate, data, length of data, number
+            of channels
+
+    Returns:
+        The true peak of the audio file in dB
+
+    Raises:
+        Any errors raised should be put here
+
+    &#34;&#34;&#34;
+    resampling_factor = 4  # use a resampling factor of 4
+
+    # calculate number of samples in resampled file
+    samples = wav_info[2] * resampling_factor  # wav_info[2] is the length of the data
+
+    # resample using FFT
+    new_audio = scipy.signal.resample(wav_info[0], samples)
+    current_peak1 = np.max(np.abs(new_audio))  # find peak value
+    current_peak1 = math.log(current_peak1, 10) * 20  # convert to decibels
+
+    # resample using resampy
+    new_audio = resampy.resample(wav_info[0].transpose(), wav_info[2], samples, axis=-1)
+    current_peak2 = np.max(np.abs(new_audio))  # find peak value
+    current_peak2 = math.log(current_peak2, 10) * 20  # convert to decibels
+
+    # resample using polyphase filtering
+    new_audio = scipy.signal.resample_poly(wav_info[0], resampling_factor, 1)
+    current_peak3 = np.max(np.abs(new_audio))  # find peak value
+    current_peak3 = math.log(current_peak3, 10) * 20  # convert to decibels
+
+    # get and return median of the three techniques
+    peak = statistics.median([current_peak1, current_peak2, current_peak3])
+    return peak</code></pre>
+</details>
+</dd>
+<dt id="main.App.get_platform_names"><code class="name flex">
+<span>def <span class="ident">get_platform_names</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gives the standard names stored within the standard dictionary.</p>
+<p>Returns the standard names currently being stored as list.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>name_list</code></dt>
+<dd>A list of all the names currently being stored.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_platform_names(self):
+    &#34;&#34;&#34; Gives the standard names stored within the standard dictionary.
+
+    Returns the standard names currently being stored as list.
+
+    Args:
+        self: Instance of main window
+
+    Returns:
+        name_list: A list of all the names currently being stored.
+
+    Raises:
+        Any errors raised should be put here
+    &#34;&#34;&#34;
+    name_list = []
+    for key in self.platforms:
+        name_list.append(key)
+    return name_list</code></pre>
+</details>
+</dd>
+<dt id="main.App.get_platform_names_lower"><code class="name flex">
+<span>def <span class="ident">get_platform_names_lower</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gives the standard names stored within the standard dictionary in lower case</p>
+<p>Returns the standard names in lower case in a list. To be used to check whether a name is
+being stored, not to display the names.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>name_list</code></dt>
+<dd>A list of all the names currently being stored.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_platform_names_lower(self):
+    &#34;&#34;&#34; Gives the standard names stored within the standard dictionary in lower case
+
+    Returns the standard names in lower case in a list. To be used to check whether a name is
+    being stored, not to display the names.
+
+    Args:
+        self: Instance of main window
+
+    Returns:
+        name_list: A list of all the names currently being stored.
+
+    Raises:
+        Any errors raised should be put here
+    &#34;&#34;&#34;
+    name_list = []
+    for key in self.platforms:
+        name_list.append(key.lower().split())
+    return name_list</code></pre>
+</details>
+</dd>
+<dt id="main.App.get_platform_standard"><code class="name flex">
+<span>def <span class="ident">get_platform_standard</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gives the standard values for a platform passed</p>
+<p>Returns the LUFS and Peak values for the platform</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+<dt><strong><code>name</code></strong></dt>
+<dd>the name of the platform we will return lufs and peak values for</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A tuple in the form of (max integrated LUFS, max true peak dB)</p>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_platform_standard(self, name):
+    &#34;&#34;&#34; Gives the standard values for a platform passed
+
+    Returns the LUFS and Peak values for the platform
+
+    Args:
+        self: Instance of main window
+        name: the name of the platform we will return lufs and peak values for
+
+    Returns:
+        A tuple in the form of (max integrated LUFS, max true peak dB)
+
+    Raises:
+        Any errors raised should be put here
+
+    &#34;&#34;&#34;
+    return self.platforms.get(name)</code></pre>
+</details>
+</dd>
+<dt id="main.App.is_valid_input"><code class="name flex">
+<span>def <span class="ident">is_valid_input</span></span>(<span>self, input)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gives the standard names stored within the standard dictionary.</p>
+<p>Returns the standard names currently being stored as list.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+<dt><strong><code>curr_input</code></strong></dt>
+<dd>the LUFS or peak input a user is trying to include as a platform standard</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>is_valid</code></dt>
+<dd>a boolean value for whether the input is valid or not</dd>
+<dt><code>error_msg</code></dt>
+<dd>the error message to report if the input is not valid</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_valid_input(self, input):
+    &#34;&#34;&#34; Gives the standard names stored within the standard dictionary.
+
+    Returns the standard names currently being stored as list.
+
+    Args:
+        self: Instance of main window
+        curr_input: the LUFS or peak input a user is trying to include as a platform standard
+
+    Returns:
+        is_valid: a boolean value for whether the input is valid or not
+        error_msg: the error message to report if the input is not valid
+
+    Raises:
+        Any errors raised should be put here
+    &#34;&#34;&#34;
+    error_msg = &#34;&#34;
+    is_valid = True
+    if input[0] == &#39;-&#39;:
+        if not input[1:].isnumeric():
+            split_value = input[1:].split(&#34;.&#34;)
+            if len(split_value) != 2:
+                error_msg = &#34;Enter a numeric value&#34;
+                is_valid = False
+            elif not split_value[0].isnumeric() or not split_value[0].isnumeric():
+                if split_value[0] != &#34;&#34;:
+                    error_msg = &#34;Enter a numeric value&#34;
+                    is_valid = False
+    else:
+        error_msg = &#34;Must enter a negative value&#34;
+        is_valid = False
+    return is_valid, error_msg</code></pre>
+</details>
+</dd>
+<dt id="main.App.open_wav_file"><code class="name flex">
+<span>def <span class="ident">open_wav_file</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Opens the wav file and fetches its needed information.</p>
+<p>Opens the selected wav file and fetches its sample rate, data itself, length of data, and
+number of channels.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>An App Object.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A tuple containing the selected wav file's sample rate, data, length of data, and number
+of channels.</p>
+<h2 id="raises">Raises</h2>
+<p>Add possible errors here.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def open_wav_file(self):
+    &#34;&#34;&#34;Opens the wav file and fetches its needed information.
+
+    Opens the selected wav file and fetches its sample rate, data itself, length of data, and
+    number of channels.
+
+    Args:
+        self: An App Object.
+
+    Returns:
+        A tuple containing the selected wav file&#39;s sample rate, data, length of data, and number
+         of channels.
+
+    Raises:
+        Add possible errors here.
+
+    &#34;&#34;&#34;
+    file_type = self.get_file_path().split(&#39;.&#39;) #split file path on &#39;.&#39;
+    file_type = file_type[-1] #take the last entry in the list from split as the file extension
+
+    # if the file is an MP4 file then open using moviepy and extract the audio
+    if file_type.upper() == &#39;MP4&#39;:
+        clip = mp.VideoFileClip(self.get_file_path())
+        audio_file = clip.audio
+        data = audio_file.to_soundarray(None,44100)
+        rate = 44100
+    # else open as an audio (wav/flac) file
+    else:
+        data, rate = sf.read(self.get_file_path())
+
+    length_file = len(data)
+
+    if len(data.shape) &gt; 1:
+        n_channels = data.shape[1]
+    else:
+        n_channels = 1
+
+    wav_info = (data, rate, length_file, n_channels)
+    return wav_info</code></pre>
+</details>
+</dd>
+<dt id="main.App.remove_platform"><code class="name flex">
+<span>def <span class="ident">remove_platform</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes the platform name passed</p>
+<p>Removes the platform from the platform dictionary as well as the standards.db database</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+<dt><strong><code>name</code></strong></dt>
+<dd>the name of the platform we will remove</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_platform(self, name):
+    &#34;&#34;&#34; Removes the platform name passed
+
+    Removes the platform from the platform dictionary as well as the standards.db database
+
+    Args:
+        self: Instance of main window
+        name: the name of the platform we will remove
+
+    Raises:
+        Any errors raised should be put here
+
+    &#34;&#34;&#34;
+    self.platforms.pop(name)
+    try:
+        connection = sqlite3.connect(&#39;standards.db&#39;)
+        cursor = connection.cursor()
+        delete_query = &#34;&#34;&#34;DELETE FROM Standards
+                            WHERE Standard_Name = ?&#34;&#34;&#34;
+        cursor.execute(delete_query, (name,))
+        connection.commit()
+        connection.close()
+    except sqlite3.OperationalError:
+        # create an error window which will destroy the main window
+        no_standards_file_window.NoStandardsWindow(self)</code></pre>
+</details>
+</dd>
+<dt id="main.App.select_audio_file"><code class="name flex">
+<span>def <span class="ident">select_audio_file</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Prompts user for an audio file path.</p>
+<p>Uses askopenfilename to select can audio file to be tested.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def select_audio_file(self):
+    &#34;&#34;&#34; Prompts user for an audio file path.
+
+    Uses askopenfilename to select can audio file to be tested.
+
+    Args:
+      self: Instance of main window
+
+    Raises:
+      Any errors raised should be put here
+
+    &#34;&#34;&#34;
+    # file types to accept
+    filetypes = (
+        (&#34;WAV file&#34;, &#34;*.wav&#34;),
+        (&#34;FLAC file&#34;, &#34;*.flac&#34;),
+        (&#34;MP4 file&#34;, &#34;*.mp4&#34;)
+    )
+    filename = fd.askopenfilename(
+        title=&#34;Select a file&#34;,
+        initialdir=&#39;/&#39;,
+        filetypes=filetypes
+    )
+
+    self.change_file_path(filename)
+
+    if self.get_file_path() != &#34;&#34;:
+        report_results_window.Report(self, self.get_file_path())</code></pre>
+</details>
+</dd>
+<dt id="main.App.set_platform_standard"><code class="name flex">
+<span>def <span class="ident">set_platform_standard</span></span>(<span>self, name, value_type, new_value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set (change) an existing platform standard</p>
+<p>Will change the platforms dictionary and the standards.db database based on changes passed
+by user</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+<dt><strong><code>name</code></strong></dt>
+<dd>The name of the platform</dd>
+<dt><strong><code>value_type</code></strong></dt>
+<dd>Whether the user wishes to change the LUFS or peak value</dd>
+<dt><strong><code>new_value</code></strong></dt>
+<dd>The new value to change to. A string.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_platform_standard(self, name, value_type, new_value):
+    &#34;&#34;&#34; Set (change) an existing platform standard
+
+    Will change the platforms dictionary and the standards.db database based on changes passed
+    by user
+
+    Args:
+        self: Instance of main window
+        name: The name of the platform
+        value_type: Whether the user wishes to change the LUFS or peak value
+        new_value: The new value to change to. A string.
+
+    Raises:
+        Any errors raised should be put here
+    &#34;&#34;&#34;
+    if new_value != &#34;&#34;:
+        new_value_float = float(new_value)
+    else:
+        new_value_float = &#34;&#34;
+    if value_type == &#34;Integrated Loudness (LUFS)&#34;:
+        curr_value = list(self.get_platform_standard(name))
+        curr_value[0] = new_value_float
+        self.platforms[name] = tuple(curr_value)
+        # now update database
+        try:
+            connection = sqlite3.connect(&#39;standards.db&#39;)
+            cursor = connection.cursor()
+            update_query = &#34;&#34;&#34;UPDATE Standards
+                            SET LUF_Value = ?
+                            WHERE Standard_Name = ?&#34;&#34;&#34;
+            cursor.execute(update_query, (new_value_float, name))
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            no_standards_file_window.NoStandardsWindow(self)
+    else:
+        curr_value = list(self.get_platform_standard(name))
+        curr_value[1] = new_value_float
+        self.platforms[name] = tuple(curr_value)
+        # now update database
+        try:
+            connection = sqlite3.connect(&#39;standards.db&#39;)
+            cursor = connection.cursor()
+            update_query = &#34;&#34;&#34;UPDATE Standards
+                            SET Peak_Value = ?
+                            WHERE Standard_Name = ?&#34;&#34;&#34;
+            cursor.execute(update_query, (new_value_float, name))
+            connection.commit()
+            connection.close()
+        except sqlite3.OperationalError:
+            # create an error window which will destroy the main window
+            no_standards_file_window.NoStandardsWindow(self)</code></pre>
+</details>
+</dd>
+<dt id="main.App.store_changes"><code class="name flex">
+<span>def <span class="ident">store_changes</span></span>(<span>self, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Stores whether a user should make changes after a warning window.</p>
+<p>Will be used by the warning window if a user selects yes after a warning. Will also be used
+by the window that prompted the warning after the changed has been made to reset the value.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>self</code></strong></dt>
+<dd>Instance of main window</dd>
+<dt><strong><code>value</code></strong></dt>
+<dd>A boolean value</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<p>Any errors raised should be put here</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def store_changes(self, value):
+    &#34;&#34;&#34;Stores whether a user should make changes after a warning window.
+
+    Will be used by the warning window if a user selects yes after a warning. Will also be used
+    by the window that prompted the warning after the changed has been made to reset the value.
+
+    Args:
+        self: Instance of main window
+        value: A boolean value
+
+    Raises:
+        Any errors raised should be put here
+
+    &#34;&#34;&#34;
+    if value:
+        self.make_changes = True
+    else:
+        self.make_changes = False</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="main.App" href="#main.App">App</a></code></h4>
+<ul class="">
+<li><code><a title="main.App.add_to_platforms" href="#main.App.add_to_platforms">add_to_platforms</a></code></li>
+<li><code><a title="main.App.change_file_path" href="#main.App.change_file_path">change_file_path</a></code></li>
+<li><code><a title="main.App.get_change" href="#main.App.get_change">get_change</a></code></li>
+<li><code><a title="main.App.get_file_path" href="#main.App.get_file_path">get_file_path</a></code></li>
+<li><code><a title="main.App.get_luf" href="#main.App.get_luf">get_luf</a></code></li>
+<li><code><a title="main.App.get_max_platform_name_length" href="#main.App.get_max_platform_name_length">get_max_platform_name_length</a></code></li>
+<li><code><a title="main.App.get_peak" href="#main.App.get_peak">get_peak</a></code></li>
+<li><code><a title="main.App.get_platform_names" href="#main.App.get_platform_names">get_platform_names</a></code></li>
+<li><code><a title="main.App.get_platform_names_lower" href="#main.App.get_platform_names_lower">get_platform_names_lower</a></code></li>
+<li><code><a title="main.App.get_platform_standard" href="#main.App.get_platform_standard">get_platform_standard</a></code></li>
+<li><code><a title="main.App.is_valid_input" href="#main.App.is_valid_input">is_valid_input</a></code></li>
+<li><code><a title="main.App.open_wav_file" href="#main.App.open_wav_file">open_wav_file</a></code></li>
+<li><code><a title="main.App.remove_platform" href="#main.App.remove_platform">remove_platform</a></code></li>
+<li><code><a title="main.App.select_audio_file" href="#main.App.select_audio_file">select_audio_file</a></code></li>
+<li><code><a title="main.App.set_platform_standard" href="#main.App.set_platform_standard">set_platform_standard</a></code></li>
+<li><code><a title="main.App.store_changes" href="#main.App.store_changes">store_changes</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

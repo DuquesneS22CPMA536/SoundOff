@@ -1,3 +1,7 @@
+"""
+This module will display an error message raised within the user input in either
+adding a new platform or modifying an existing one.
+"""
 import tkinter as tk
 from tkinter import ttk
 

@@ -1,3 +1,7 @@
+"""
+This module will display the error message that the standards.db file is missing,
+and will prompt the user to either exit or create a new file.
+"""
 import tkinter as tk
 from tkinter import ttk
 import sqlite3
@@ -6,8 +10,9 @@ import sqlite3
 class NoStandardsWindow(tk.Toplevel):
     """A window to display an error in the standards.db file
 
-    Will display the message that the standards.db file must be held in the same file as the program. Will also
-    automatically exit out of the main window, as it cannot function without the standards.db file.
+    Will display the message that the standards.db file must be held in the same file
+    as the program. Will also automatically exit out of the main window, as it cannot
+    function without the standards.db file.
 
     """
 
@@ -78,8 +83,9 @@ class NoStandardsWindow(tk.Toplevel):
     def create_blank(self):
         """Creates a blank table within the standards.db file
 
-        Will create a functioning table within the standards.db file so that if a user deletes the standards.db file,
-        the program will still function, just without any platform standards.
+        Will create a functioning table within the standards.db file so that if a user
+        deletes the standards.db file, the program will still function, just without
+        any platform standards.
 
         Args:
             self: The no standards.db file found window
