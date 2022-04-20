@@ -79,19 +79,27 @@ class audio_calculations():
         else:
             n_channels = 1
 
-        output_query = f"ffmpeg -i {self.get_file_path()} -af loudnorm=I=-16:print_format=summary -f null -"
-        output = subprocess.getoutput(output_query)
+        #create query that would normally be run in the command prompt
+        output_query = ['ffmpeg', '-i', self.get_file_path(), '-af', 'loudnorm=I=-16:print_format=summary', '-f', 'null', '-']
+        output = subprocess.getoutput(output_query) #run the query and receive the output
 
-        list_split = output.split('\n')
+        list_split = output.split('\n') #split the output on new lines
 
+        #initialize lufs and peak values to default -99.9
+        lufs_value = -99.9
+        peak_value = -99.9
+
+        #loop through the lines of list_split starting at the end and working backwards
         for i in range(len(list_split) - 1, 0, -1):
+            #if the line starts with 'Input True Peak:'
             if list_split[i][0:16] == 'Input True Peak:':
-                lufs_string = list_split[i - 1]
-                peak_string = list_split[i]
-                break
+                lufs_string = list_split[i - 1] #then the lufs line is the line preceeding current line
+                peak_string = list_split[i] #and the peak line is the current line
 
-        lufs = float(lufs_string.split()[2])
-        peak = float(peak_string.split()[3])
-        wav_info = (data, rate, n_channels, lufs, peak)
+                lufs_value = (float(lufs_string.split()[2])) #split the lufs string on spaces and take the 3rd element
+                peak_value = (float(peak_string.split()[3])) #split the peak string on spaces and take the 4th element
+                break #we don't need to finish the loop since we found what we were looking for
+        
+        wav_info = (data, rate, n_channels, lufs_value, peak_value)
 
         return wav_info
