@@ -1,8 +1,9 @@
 from audio_calculations import audio_calculations as ac
 
+
 #One Channel 24-bit Wave File
 def test_One_24():
-    a = ac('SineWave.wav')
+    a = ac('testfiles/SineWave.wav')
     info = a.select_file()
     assert 48000 == info[1]
     assert 1 == info[2]
@@ -35,7 +36,7 @@ def test_One_8():
 
 #Two Channel - 24-bit Flac file
 def test_Two_24_flac():
-    a = ac('2_Channel_24_48_minus6db.flac')
+    a = ac('testfiles/2_Channel_24_48_minus6db.flac')
     info = a.select_file()
     assert 48000 == info[1]
     assert 2 == info[2]
@@ -68,7 +69,7 @@ def test_Two_16():
 
 #Two Channel - 24-bit mp4 file
 def test_Two_24_mp4():
-    a = ac('2_Channel_24_48_minus6db.mp4')
+    a = ac('testfiles/2_Channel_24_48_minus6db.mp4')
     info = a.select_file()
     assert 44100 == info[1]
     assert 2 == info[2]
@@ -76,3 +77,14 @@ def test_Two_24_mp4():
     assert -5.0 == round(info[3],1)
 
     assert -0.4 == round(info[4],1)
+    
+#Six Channel - 24-bit wave file
+def test_Six_24_Wave():
+    a = ac('testfiles/6_Channel_White_Noise.wav')
+    info = a.select_file()
+    assert 44100 == info[1]
+    assert 6 == info[2]
+
+    assert -5.0 == round(info[3],1)
+
+    assert -6.0 == round(info[4],1)
