@@ -1,10 +1,5 @@
 import soundfile as sf
-import pyloudnorm as pyln
-import numpy as np
-import scipy
-import math
-import resampy
-import statistics
+import subprocess
 import moviepy.editor as mp
 
 class audio_calculations():
@@ -50,20 +45,21 @@ class audio_calculations():
         """
         return self.file_path
 
-    def open_wav_file(self):
-        """Opens the wav file and fetches its needed information.
-
-        Opens the selected wav file and fetches its sample rate, data itself, length of data, and number of channels.
-
+    def select_file(self):
+        """Opens the file, fetches its needed information, and calculates its LUFS and True peak values.
+        
+        Opens the selcted file, fetches its sample rate, data itself, and number of channels, and calculates its 
+        LUFS and True peak values.
+        
         Args:
             self: A main Object.
-
+            
         Returns:
-            A tuple containing the selected wav file's sample rate, data, length of data, and number of channels.
-
+            A tuple containing the selected file's data, sample rate, number of channels, LUFS value, and True peak value.
+            
         Raises:
             Add possible errors here.
-
+            
         """
         fileType = self.get_file_path().split('.') #split file path on '.'
         fileType = fileType[-1] #take the last entry in the list from split as the file extension
@@ -74,77 +70,28 @@ class audio_calculations():
             audioFile = clip.audio
             data = audioFile.to_soundarray(None,44100)
             rate = 44100
-        else: #else open as an audio (wav/flac) file
+        #else open as an audio (wav/flac) file
+        else:
             data, rate = sf.read(self.get_file_path())
-
-        length_file = len(data)
 
         if len(data.shape) > 1:
             n_channels = data.shape[1]
         else:
             n_channels = 1
 
-        wav_info = (data, rate, length_file, n_channels)
+        output_query = f"ffmpeg -i {self.get_file_path()} -af loudnorm=I=-16:print_format=summary -f null -"
+        output = subprocess.getoutput(output_query)
+
+        list_split = output.split('\n')
+
+        for i in range(len(list_split) - 1, 0, -1):
+            if list_split[i][0:16] == 'Input True Peak:':
+                lufs_string = list_split[i - 1]
+                peak_string = list_split[i]
+                break
+
+        lufs = float(lufs_string.split()[2])
+        peak = float(peak_string.split()[3])
+        wav_info = (data, rate, n_channels, lufs, peak)
 
         return wav_info
-
-    def get_luf(self, wav_info):
-        """Returns the integrated loudness in LUFS of an audio file.
-
-        Uses pyloudnorm to find the LUFS of an audio file found at a file path passed.
-
-        Args:
-            self: Instance of main object
-            wav_info: a tuple of the selected wav file's sample rate, data, length of data, number of channels
-
-        Returns:
-            The integrated loudness of the audio file in LUFS
-
-        Raises:
-            Any errors raised should be put here
-
-        """
-
-        meter = pyln.Meter(wav_info[1])  # create meter; wav_info[1] is the rate
-        lufs = meter.integrated_loudness(wav_info[0])  # get lufs value; wav_info[0] is the data
-        return lufs
-
-    def get_peak(self, wav_info):
-        """Returns the true peak in dB of an audio file.
-
-        Uses some method to find the peak of an audio file found at a file path passed.
-
-        Args:
-            self: Instance of main object
-            wav_info: a tuple of the selected wav file's sample rate, data, length of data, number of channels
-
-        Returns:
-            The true peak of the audio file in dB
-
-        Raises:
-            Any errors raised should be put here
-
-        """
-        resampling_factor = 4  # use a resampling factor of 4
-
-        # calculate number of samples in resampled file
-        samples = wav_info[2] * resampling_factor  # wav_info[2] is the length of the data
-
-        # resample using FFT
-        new_audio = scipy.signal.resample(wav_info[0], samples)
-        current_peak1 = np.max(np.abs(new_audio))  # find peak value
-        current_peak1 = math.log(current_peak1, 10) * 20  # convert to decibels
-
-        # resample using resampy
-        new_audio = resampy.resample(wav_info[0], wav_info[2], samples, axis=-1)
-        current_peak2 = np.max(np.abs(new_audio))  # find peak value
-        current_peak2 = math.log(current_peak2, 10) * 20  # convert to decibels
-
-        # resample using polynomial
-        new_audio = scipy.signal.resample_poly(wav_info[0], resampling_factor, 1)
-        current_peak3 = np.max(np.abs(new_audio))  # find peak value
-        current_peak3 = math.log(current_peak3, 10) * 20  # convert to decibels
-
-        # get and return median of the three techniques
-        peak = statistics.median([current_peak1, current_peak2, current_peak3])
-        return peak
