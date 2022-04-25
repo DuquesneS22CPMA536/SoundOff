@@ -444,6 +444,7 @@ class App(tk.Tk):
         return self.make_changes
 
     def select_file(self):
+        """ Prompts user for a file path (WAV, FLAC, MP4) and computes the number of channels
         and sample rate.
 
         Calls get_lufs_peak to return the lufs and peak values of the file. Calls the report
