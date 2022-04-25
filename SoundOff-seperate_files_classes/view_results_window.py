@@ -95,11 +95,11 @@ class View(tk.Toplevel):
             style="Column.TLabel")
         max_lufs_label = ttk.Label(
             scrollable_frame,
-            text="Max Integrated Loudness (LUFS)",
+            text="LUFS",
             style="Column.TLabel")
         max_peak_label = ttk.Label(
             scrollable_frame,
-            text="Max True Peak (dBFS)",
+            text="Peak",
             style="Column.TLabel")
         lufs_result_label = ttk.Label(
             scrollable_frame,
@@ -132,11 +132,11 @@ class View(tk.Toplevel):
             input_peak_label.grid(column=0, row=0, columnspan=2)
         else:
             max_lufs_label.grid(column=1, row=1, padx=5)
-            max_peak_label.grid(column=2, row=1, padx=5)
-            lufs_result_label.grid(column=3, row=1, padx=5)
+            max_peak_label.grid(column=3, row=1, padx=5)
+            lufs_result_label.grid(column=2, row=1, padx=5)
             peak_result_label.grid(column=4, row=1, padx=5)
             input_lufs_label.grid(column=0, row=0, columnspan=2, padx=10)
-            input_peak_label.grid(column=2, row=0, columnspan=2)
+            input_peak_label.grid(column=3, row=0, columnspan=2)
 
         i = 2
         for name in names_selected:
@@ -225,16 +225,16 @@ class View(tk.Toplevel):
 
             # only display report the user requested
             if lufs_or_peak == "LUFS Value":
-                lufs_label.grid(column=1, row=i, padx=5)
-                result_lufs.grid(column=2, row=i, padx=5)
+                lufs_label.grid(column=1, row=i, padx=5, sticky="e")
+                result_lufs.grid(column=2, row=i, padx=5, sticky="w")
             elif lufs_or_peak == "Peak Value":
-                peak_label.grid(column=1, row=i, padx=5)
-                result_peak.grid(column=2, row=i, padx=5)
+                peak_label.grid(column=1, row=i, padx=5, sticky="e")
+                result_peak.grid(column=2, row=i, padx=5, sticky="w")
             else:
-                lufs_label.grid(column=1, row=i, padx=5)
-                peak_label.grid(column=2, row=i, padx=5)
-                result_lufs.grid(column=3, row=i, padx=5)
-                result_peak.grid(column=4, row=i, padx=5)
+                lufs_label.grid(column=1, row=i, padx=5, sticky="e")
+                peak_label.grid(column=3, row=i, padx=5, sticky="e")
+                result_lufs.grid(column=2, row=i, padx=5, sticky="w")
+                result_peak.grid(column=4, row=i, padx=5, sticky="w")
             i += 1
 
         container.pack()
