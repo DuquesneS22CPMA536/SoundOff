@@ -11,10 +11,11 @@ import soundfile as sf
 import moviepy.editor as mp
 import add_new_window
 import modify_standards_window
+import error_window
 from view_standards_window import ViewPlatforms
 import report_results_window
 import no_standards_file_window
-import error_window
+
 
 class App(tk.Tk):
     """A SoundOff window.
@@ -49,7 +50,7 @@ class App(tk.Tk):
         self.title("SoundOff")
         width = self.winfo_screenwidth()
         height = self.winfo_screenheight()
-        new_width = int(width/1.06)
+        new_width = int(width/1.1)
         new_height = int(height/1.28)
         size = str(new_width) + "x" + str(new_height)
         self.geometry(size)
@@ -443,9 +444,11 @@ class App(tk.Tk):
         return self.make_changes
 
     def select_file(self):
-        """ Prompts user for a file path (WAV, FLAC, MP4)
+        """ Prompts user for a file path (WAV, FLAC, MP4) and computes the number of channels
+        and sample rate.
 
-        Uses askopenfilename to select can audio file to be tested.
+        Calls get_lufs_peak to return the lufs and peak values of the file. Calls the report
+        results window to print the results on the screen and prompt user for a report type.
 
         Args:
           self: Instance of main window
@@ -484,39 +487,66 @@ class App(tk.Tk):
             n_channels = data.shape[1]
         else:
             n_channels = 1
+        lufs_value, peak_value = get_lufs_peak(self, filename)
 
-        try:
-            #create query that would normally be run in the command prompt
-            output_query = ['ffmpeg', '-i', filename, '-af', 'loudnorm=I=-16:print_format=summary', '-f', 'null', '-']
-            output = subprocess.getoutput(output_query) #run the query and receive the output
+        if self.get_file_path() != "":
+            report_results_window.Report(self,
+                                         self.get_file_path(),
+                                         rate,
+                                         n_channels,
+                                         lufs_value,
+                                         peak_value)
 
-            list_split = output.split('\n') #split the output on new lines
 
-            #initialize lufs and peak values to default -99.9
-            lufs_value = -99.9
-            peak_value = -99.9
+def get_lufs_peak(parent_window, file_name):
+    """Returns the lufs and peak values for a file.
 
-            #loop through the lines of list_split starting at the end and working backwards
-            for i in range(len(list_split) - 1, 0, -1):
-                #if the line starts with 'Input True Peak:'
-                if list_split[i][0:16] == 'Input True Peak:':
-                    lufs_string = list_split[i - 1] #then the lufs line is the line preceeding current line
-                    peak_string = list_split[i] #and the peak line is the current line
+    Uses ffmpeg to calculate the values.
 
-                    lufs_value = (float(lufs_string.split()[2])) #split the lufs string on spaces and take the 3rd element
-                    peak_value = (float(peak_string.split()[3])) #split the peak string on spaces and take the 4th element
-                    break #we don't need to finish the loop since we found what we were looking for
+    Args:
+        parent_window: Instance of main window
+        file_name: The file path of the file to find values for.
 
-            if self.get_file_path() != "":
-                report_results_window.Report(self,
-                                             self.get_file_path(),
-                                             rate,
-                                             n_channels,
-                                             lufs_value,
-                                             peak_value)
-        except Exception as e:
-            pass
-            error_window.AddError(self, "Cannot find LUFS or Peak for this file.")
+    Raises:
+        Any errors raised should be put here
+
+    """
+    # initialize lufs and peak values to default -99.9
+    # if there is an error in the calculation, this value will show up
+    lufs_value = -99.9
+    peak_value = -99.9
+
+    # create query that would normally be run in the command prompt
+    output_query = ['ffmpeg', '-i', file_name, '-af', 'loudnorm=I=-16:print_format=summary',
+                    '-f', 'null', '-']
+    # run the query and receive the output
+    output = subprocess.getoutput(output_query)
+
+    # split the output on new lines
+    list_split = output.split('\n')
+
+    # loop through the lines of list_split starting at the end and working backwards
+    for i in range(len(list_split) - 1, 0, -1):
+        # if the line starts with 'Input True Peak:'
+        if list_split[i][0:16] == 'Input True Peak:':
+            # then the lufs line is the line preceding current line
+            lufs_string = list_split[i - 1]
+            # and the peak line is the current line
+            peak_string = list_split[i]
+
+            # split the lufs string on spaces and take the 3rd element
+            lufs_value = (float(lufs_string.split()[2]))
+            # split the peak string on spaces and take the 4th element
+            peak_value = (float(peak_string.split()[3]))
+            # we don't need to finish the loop since we found what we were looking for
+            break
+
+    if lufs_value == -99.9 and peak_value == -99.9:
+        error_window.AddError(
+            parent_window,
+            "There was an error while calculating the LUFS and Peak value")
+
+    return lufs_value, peak_value
 
 
 if __name__ == "__main__":
